@@ -1,8 +1,0 @@
-2016-10-03 13:32:49  [ INFO ] ( com.echo.service.testService.add(testService.java:15) ) -->  添加了用户信息--info
-2016-10-03 13:32:49  [ WARN ] ( com.echo.service.testService.add(testService.java:16) ) -->  添加了用户信息--warn
-2016-10-03 13:32:49  [ ERROR ] ( com.echo.service.testService.add(testService.java:17) ) -->  添加了用户信息--error
-2016-10-03 13:32:49  [ FATAL ] ( com.echo.service.testService.add(testService.java:18) ) -->  添加了用户信息--fatal
-2016-10-03 13:36:21  [ INFO ] ( com.echo.service.testService.add(testService.java:15) ) -->  添加了用户信息--info
-2016-10-03 13:36:21  [ WARN ] ( com.echo.service.testService.add(testService.java:16) ) -->  添加了用户信息--warn
-2016-10-03 13:36:21  [ ERROR ] ( com.echo.service.testService.add(testService.java:17) ) -->  添加了用户信息--error
-2016-10-03 13:36:21  [ FATAL ] ( com.echo.service.testService.add(testService.java:18) ) -->  添加了用户信息--fatal
