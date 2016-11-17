@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+	<!-- 配置自动扫描的包 -->
+	<context:component-scan base-package="com.echo" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+	</context:component-scan>
+
+	<!-- 配置视图解析器：将Handler方法的返回值解析为实际的物理视图 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+	
+    <!-- 配置资源绑定消息文件 ，用于表单错误自定义回显。（也可配置国际化资源文件） -->
+    
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="formPrompt"></property>
+	</bean>
+	 
+	<!-- 处理静态资源 -->
+	<mvc:default-servlet-handler/>
+	<mvc:annotation-driven />  
+	
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/customer/beMember"/>
+			<bean class="com.echo.interceptors.CheckBirthdayInterceptor"></bean>
+		</mvc:interceptor>
+	
+	   <mvc:interceptor>
+			<mvc:mapping path="/customer/signout"/>
+			<bean class="com.echo.interceptors.SignoutInterceptor"></bean>
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/customer/order/hotel_*"/>
+			<bean class="com.echo.interceptors.GenerateOrderInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	<!-- 使AspectJ注解起作用：自动为匹配的类生成代理对象。（注意：Controller类需要aop时，aspectj-autoproxy放到springmvc.xml，注意扫描的包） -->
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+	 
+	<mvc:view-controller path="/order" view-name="generateOrder"/>
+	<mvc:view-controller path="/hotelinfo" view-name="hotelInfo"/>
+</beans>

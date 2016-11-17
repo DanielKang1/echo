@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.echo.domain.po.DistrictDiscount" table="VIP_DISTRICT">
+        <id name="id" type="int">
+            <column name="ID" />
+            <generator class="native" />
+        </id>
+        <property name="districtID" type="int">
+            <column name="DISTRICT_ID" />
+        </property>
+        <property name="districtName" type="java.lang.String">
+            <column name="DISTRICT_NAME" />
+        </property>
+        <property name="v1Discount" type="double">
+            <column name="V1_DISCOUNT" />
+        </property>
+        <property name="v2Discount" type="double">
+            <column name="V2_DISCOUNT" />
+        </property>
+        <property name="v3Discount" type="double">
+            <column name="V3_DISCOUNT" />
+        </property>
+        <property name="v4Discount" type="double">
+            <column name="V4_DISCOUNT" />
+        </property>
+        <property name="v5Discount" type="double">
+            <column name="V5_DISCOUNT" />
+        </property>
+    </class>
+</hibernate-mapping>

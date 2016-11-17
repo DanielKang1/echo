@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2016-11-4 0:00:18 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.echo.domain.po.CreditChangeItem" table="CREDIT">
+        <id name="itemID" type="int">
+            <column name="ITEM_ID" />
+            <generator class="native" />
+        </id>
+        <property name="customerID" type="int">
+            <column name="CUSTOMER_ID" />
+        </property>
+        <property name="orderID" type="int">
+            <column name="ORDER_ID" />
+        </property>
+        <property name="operationType" type="byte">
+            <column name="OPERATION_TYPE" />
+        </property>
+        <property name="hotelID" type="int">
+            <column name="HOTEL_ID" />
+        </property>
+        <property name="hotelName" type="java.lang.String">
+            <column name="HOTEL_NAME" />
+        </property>
+        <property name="amount" type="double">
+            <column name="AMOUNT" />
+        </property>
+        <property name="changeDate" type="java.util.Date">
+            <column name="OPERATION_DATE" />
+        </property>
+    </class>
+</hibernate-mapping>

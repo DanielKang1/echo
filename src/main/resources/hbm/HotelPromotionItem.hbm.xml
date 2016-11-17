@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.echo.domain.po.HotelPromotionItem" table="HOTELPROMOTION">
+        <id name="id" type="int">
+            <column name="ID" />
+            <generator class="native" />
+        </id>
+        <property name="hotelID" type="int">
+            <column name="HOTEL_ID" />
+        </property>
+        <property name="birthdayDiscount" type="double">
+            <column name="BIRTHDAY_DISCOUNT" />
+        </property>
+        <property name="bookingMeasure" type="int">
+            <column name="BOOKING_MEASURE" />
+        </property>
+        <property name="bookingDiscount" type="double">
+            <column name="BOOKING_MEASURE_DISCOUNT" />
+        </property>
+        <property name="cooperativeEnterpriseDiscount" type="double">
+            <column name="COOPERATIVE_ENTERPRISE_DISCOUNT" />
+        </property>
+        <property name="birthdaySwitch" type="boolean">
+            <column name="birthday_discount" />
+        </property>
+        <property name="bookingDiscountSwitch" type="boolean">
+            <column name="booking_measure_switch" />
+        </property>
+        <property name="cooperativeEnterpriseSwitch" type="boolean">
+            <column name="cooperative_enterprise_discount_switch" />
+        </property>
+    </class>
+</hibernate-mapping>

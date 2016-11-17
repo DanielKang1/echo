@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2016-11-2 16:07:35 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.echo.domain.po.HotelStaff" table="HOTELSTAFF">
+        <id name="staffID" type="int">
+            <column name="STAFF_ID" />
+            <generator class="native" />
+        </id>
+        <property name="hotelID" type="int">
+            <column name="HOTEL_ID" />
+        </property>
+        <property name="staffName" type="java.lang.String">
+            <column name="STAFF_NAME" />
+        </property>
+        <property name="pwdsalt" type="java.lang.String">
+            <column name="PWDSALT" />
+        </property>
+        <property name="pwd" type="java.lang.String">
+            <column name="PWD" />
+        </property>
+        <property name="phone" type="java.lang.String">
+            <column name="PHONE" />
+        </property>
+    </class>
+</hibernate-mapping>

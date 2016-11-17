@@ -1,0 +1,166 @@
+.box {
+	width: 1150px;
+	background-color:rgba(255,255,255,0.85);
+	text-align: center;
+}
+.box span{
+	color: #999999
+}
+table.gridtable {
+	font-size:10px;
+	color:#333333;
+	border-width: 0px;
+	border-collapse: collapse;
+}
+table.gridtable th {
+	color:#999999;
+	font-size:10px;
+	border-width: 0px;
+	padding: 5px;
+}
+table.gridtable td.a1{
+	color:#999999;
+	border-width: 0px;
+	padding: 5px;
+}
+table.gridtable td.a2{
+	color:#666666;
+	border-width: 0px;
+	padding: 5px;
+}
+.resroom{
+	font-size: 12px;
+	color: #666666;
+}
+.line-ds{
+	border-top:1px dashed #cde;
+	width:93%;
+	margin:0 25px
+}
+.title_ td{
+	font-weight: bold;
+}
+.tx{
+	width: 70px;
+	height: 70px;
+	margin-top: 5px;
+}
+a.res:hover{
+	 color:#1597B8;
+}
+.media-content{
+	font-size: 12px;
+}
+.error {
+	font-size: 10px;
+	font-style: italic;
+	color: red;
+	float: right;
+}
+.grid {
+	margin:20px 0px 0px 0px;
+	overflow: hidden;
+	width: 100%;
+	list-style: none;
+	text-align: center;
+}
+ 
+.grid figure {
+	position: relative;
+	z-index: 1;
+	display: inline-block;
+	overflow: hidden;
+	background: #3085a3;
+	text-align: center;
+	cursor: pointer;
+}
+
+.grid figure img {
+	position: relative;
+	display: block;
+	min-height: 100%;
+	opacity: 0.8;
+}
+
+.grid figure figcaption {
+	padding: 14px;
+	color: #fff;
+	text-transform: uppercase;
+	font-size: 10px;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+}
+
+.grid figure figcaption::before,
+.grid figure figcaption::after {
+	pointer-events: none;
+}
+
+.grid figure figcaption,
+.grid figure a {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+ 
+/*---------------*/
+/***** Lily *****/
+/*---------------*/
+
+figure.effect-lily img {
+	width: -webkit-calc(100% + 50px);
+	width: calc(100% + 50px);
+	opacity: 0.7;
+	-webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+	transition: opacity 0.35s, transform 0.35s;
+	-webkit-transform: translate3d(-40px,0, 0);
+	transform: translate3d(-40px,0,0);
+}
+
+figure.effect-lily figcaption {
+	top: auto;
+	bottom: 0;
+	height: 50%;
+	text-align: left;
+}
+
+figure.effect-lily h2,
+figure.effect-lily p {
+	-webkit-transform: translate3d(0,40px,0);
+	transform: translate3d(0,40px,0);
+}
+
+figure.effect-lily h2 {
+	-webkit-transition: -webkit-transform 0.35s;
+	transition: transform 0.35s;
+}
+
+figure.effect-lily p {
+	color: rgba(255,255,255,0.6);
+	opacity: 0;
+	-webkit-transition: opacity 0.2s, -webkit-transform 0.35s;
+	transition: opacity 0.2s, transform 0.35s;
+}
+
+figure.effect-lily:hover img,
+figure.effect-lily:hover p {
+	opacity: 1;
+}
+
+figure.effect-lily:hover img,
+figure.effect-lily:hover h2,
+figure.effect-lily:hover p {
+	-webkit-transform: translate3d(0,0,0);
+	transform: translate3d(0,0,0);
+}
+
+figure.effect-lily:hover p {
+	-webkit-transition-delay: 0.05s;
+	transition-delay: 0.05s;
+	-webkit-transition-duration: 0.35s;
+	transition-duration: 0.35s;
+}
+ 

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2016-11-8 14:02:16 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.echo.domain.po.PromotionDate" table="PROMOTIONDATE">
+        <id name="id" type="int">
+            <column name="ID" />
+            <generator class="native" />
+        </id>
+        <property name="hotelID" type="int">
+            <column name="HOTEL_ID" />
+        </property>
+        <property name="startDate" type="java.util.Date">
+            <column name="START_DATE" />
+        </property>
+        <property name="endDate" type="java.util.Date">
+            <column name="END_DATE" />
+        </property>
+        <property name="discount" type="double">
+            <column name="DISCOUNT" />
+        </property>
+    </class>
+</hibernate-mapping>

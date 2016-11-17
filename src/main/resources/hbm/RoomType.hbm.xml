@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.echo.domain.po.RoomType" table="ROOMTYPE" dynamic-update="true" dynamic-insert="true">
+        <id name="typeID" type="int">
+            <column name="TYPE_ID" />
+            <generator class="native" />
+        </id>
+        <property name="hotelID" type="int">
+            <column name="hotel_id" />
+        </property>
+        <property name="typeDesc" type="java.lang.String">
+            <column name="intro" />
+        </property>
+        <property name="price" type="double">
+            <column name="price" />
+        </property>
+        <property name="typeName" type="java.lang.String">
+            <column name="TYPE_NAME" />
+        </property>
+    </class>
+</hibernate-mapping>

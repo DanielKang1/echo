@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.echo.domain.po.Hotel" table="HOTEL" dynamic-update="true" dynamic-insert="true">
+        <id name="hotelID" type="int">
+            <column name="HOTEL_ID" />
+            <generator class="native" />
+        </id>
+        <property name="hotelName" type="java.lang.String">
+            <column name="HOTEL_NAME" />
+        </property>
+        <property name="city" type="java.lang.String">
+            <column name="CITY" />
+        </property>
+        <property name="district" type="java.lang.String">
+            <column name="DISTRICT" />
+        </property>
+        <property name="address" type="java.lang.String">
+            <column name="ADDRESS" />
+        </property>
+        <property name="briefIntro" type="java.lang.String">
+            <column name="INTRO" />
+        </property>
+        <property name="facility" type="java.lang.String">
+            <column name="FACILITY" />
+        </property>
+        <property name="starLevel" type="byte">
+            <column name="STAR_LEVEL" />
+        </property>
+        
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.echo.domain.po.Order" table="C_ORDER"> <!-- 不选择动态插入的原因是：日期字段插入null时便为当前时间-->
+        <id name="orderID" type="int">
+            <column name="ORDER_ID" />
+            <generator class="native" />
+        </id>
+        <property name="orderType" type="byte">
+            <column name="ORDER_TYPE" />
+        </property>
+        
+        <many-to-one name="hotel" class="com.echo.domain.po.Hotel" column="HOTEL_ID" lazy="false"></many-to-one>
+        
+        <property name="customerID" type="int">
+            <column name="CUSTOMER_ID" />
+        </property>
+        <property name="reservedName" type="java.lang.String">
+            <column name="RESERVED_NAME" />
+        </property>
+        <property name="reservedPhone" type="java.lang.String">
+            <column name="RESERVED_PHONE" />
+        </property>
+        <property name="creationDate" type="java.util.Date">  
+            <column name="CREATION_DATE" />
+        </property>
+        <property name="checkinDate" type="java.util.Date">
+            <column name="CHECKIN_DATE" />
+        </property>
+        <property name="checkoutDate" type="java.util.Date">
+            <column name="CHECKOUT_DATE" />
+        </property>
+        <property name="latestDate" type="java.util.Date">
+            <column name="LATEST_DATE" />
+        </property>
+        
+         <many-to-one name="roomType" class="com.echo.domain.po.RoomType" column="ROOM_TYPE_ID" lazy="false"></many-to-one>
+         
+        <property name="bookingNum" type="int">
+            <column name="BOOKING_NUM" />
+        </property>
+        <property name="total" type="double">
+            <column name="TOTAL" />
+        </property>
+        <property name="peopleNum" type="int">
+            <column name="PEOPLE_NUM" />
+        </property>
+        <property name="hasChild" type="byte">
+            <column name="HASCHILD" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.echo.domain.po.RoomCheckItem" table="ROOMCHECK" dynamic-update="true" dynamic-insert="true">
+        <id name="id" type="int">
+            <column name="ID" />
+            <generator class="native" />
+        </id>
+        <property name="roomNumber" type="int">
+            <column name="room_number" />
+        </property>
+        <property name="hotelID" type="int">
+            <column name="hotel_id" />
+        </property>
+        <property name="userID" type="int">
+            <column name="customer_id" />
+        </property>
+        <property name="orderID" type="int">
+            <column name="order_id" />
+        </property>
+        <property name="checkInDate" type="java.util.Date">
+            <column name="checkin_date" />
+        </property>
+        <property name="checkOutDate" type="java.util.Date">
+            <column name="checkout_date" />
+        </property>
+    </class>
+</hibernate-mapping>

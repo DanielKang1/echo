@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.echo.domain.po.District" table="DISTRICT"  dynamic-update="true" dynamic-insert="true">
+        <id name="id" type="int">
+            <column name="ID" />
+            <generator class="native" />
+        </id>
+        <property name="districtName" type="java.lang.String">
+            <column name="DISTRICT_NAME" />
+        </property>
+        <property name="cityName" type="java.lang.String">
+            <column name="CITY_NAME" />
+        </property>
+    </class>
+</hibernate-mapping>

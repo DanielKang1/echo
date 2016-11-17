@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.echo.domain.po.MemberDiscount" table="MEMBER_LEVEL" >
+        <id name="levelID" type="int">
+            <column name="LEVEL_ID" />
+        </id>
+        <property name="levelName" type="java.lang.String">
+            <column name="LEVEL_NAME" />
+        </property>
+        <property name="discount" type="double">
+            <column name="LEVEL_DISCOUNT" />
+        </property>
+        <property name="creditLimit" type="double">
+            <column name="CREDIT" />
+        </property>
+    </class>
+</hibernate-mapping>
