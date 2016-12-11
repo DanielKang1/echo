@@ -45,21 +45,6 @@ public class HotelServiceImpl implements HotelService{
 		return hotelDAOImpl.update(hotel);
 	}
 
-	@Override
-	public List<RoomSearchResult> getHotelRoomsInfo(int hotelID) {
-		List<Object[]> result = roomDAOImpl.getAllRoomsSearchResults(hotelID);
-		List<RoomSearchResult> roomResults = new ArrayList<>();
-		for(int i = 0; i < result.size(); i++){
-			Object [] tmp = result.get(i);
-			double price = Double.parseDouble(tmp[2].toString());
-			int roomTypeID = Integer.parseInt(tmp[0].toString());
-			String roomTypeName = tmp[1].toString();
-			int roomNum = Integer.parseInt(tmp[3].toString());
-			RoomSearchResult res = new RoomSearchResult(roomTypeID, roomTypeName, price, roomNum);
-			roomResults.add(res);
-		}
-		return roomResults;
-	}
 
 	/**
 	 * 搜索操作，返回以HotelSearchResult为结果的List

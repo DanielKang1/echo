@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %> 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %> 
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%> 
 
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -14,6 +16,12 @@
     <link href="${pageContext.request.contextPath }/css/animate.min.css" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath }/css/light-bootstrap-dashboard.css" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath }/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath }/css/demo.css" rel="stylesheet"/>
+    <style type="text/css">
+    a:hover{
+    text-decoration:underline;
+    }
+    </style>
 </head>
 <body> 
 
@@ -41,13 +49,13 @@
                         <p>酒店查询</p>
                     </a>
                 </li> 
-                <li>
+                <li class="active">
                      <a href="${pageContext.request.contextPath }/customer/goViewOrders" target="_blank">
                     	<i class="fa fa-list-ul"></i>
                         <p>订单一览</p>
                     </a>        
                 </li>
-                <li  class="active">
+                <li>
                     <a href="${pageContext.request.contextPath }/goViewEvaluations" target="_blank">
                         <i class="fa fa-comments"></i>
                         <p>我的评论</p>
@@ -96,52 +104,61 @@
         </nav>
         <!-- 导航条END -->             
 
-        <div class="content">
+<div class="content">
             <div class="container-fluid">
             
-            
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="header">
-                                <h4 class="title">评论列表</h4>
-                                <p class="category">我的历史评论信息</p>
-                            </div>
+          
                             <div class="content">
-                            
-	                            <c:forEach items="${alleva }" var="eva">
-	                            <div class="media" style="font-size: 10px;">
-	 					 			  <a class="media-left" href="#">
-								        <img class="media-object img-rounded" style="margin-top: 5px;height: 100px;width: 100px;" src="/echo/img/hotel/hotel1.jpg" >
-								      </a>
-								      <div class="media-body" style="padding-left: 30px;line-height:20px;">
-								        <div class="media-content">
-								        <h5 class="media-heading">${eva.value.hotelName }</h5> <div id="${eva.key.evaluationID }"></div>
-								        <a href="" class="res"><span style="color: #1597B8">${eva.value.city }</span></a>  ：
-							                <a href="" class="res"><span style="color: #1597B8"> ${eva.value.district }</span></a>    
-							                <span> ${eva.value.address }</span><br>
-						                	<span style="font-weight: bold;">优点</span>:${eva.key.merit } <br>
-						                	<span style="font-weight: bold;">缺点</span>:${eva.key.demerit } <br>
-						                	<span>${eva.key.comment } </span>
-						                </div>
-								      </div>
-								    </div>
-								    <hr>
-	                            </c:forEach>
-                            
+                           		 <div class="panel panel-default" style="font-size: 10px;margin-top: 20px;">
+					      <div class="panel-heading" >
+					        <span style="color: #999999">订单号：</span><span>${orderInfo.orderID }</span>
+					        <span style="margin-left: 20px;color: #999999">${orderInfo.hotel.hotelName }</span>
+					      </div>
+					      <div class="panel-body">
+					       <table class="gridtable content">
+								<tr>
+									<td class="a1" width="10%">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名：</td><td class="a2" width="10%">${orderInfo.reservedName }</td>
+									<td class="a1" width="10%">联系方式：</td><td class="a2" width="10%">${orderInfo.reservedPhone }</td>
+									<td class="a1" width="10%">房间类型：</td><td class="a2" width="20%">${orderInfo.roomType.typeName }</td>
+									<td class="a1" width="10%">预订数量：</td><td class="a2" width="10%">${orderInfo.bookingNum }</td>
+								</tr>
+								<tr>
+									<td class="a1" width="10%">支付方式：</td><td class="a2" width="10%">前台支付</td>
+									<td class="a1" width="10%">支付总额：</td><td class="a2" width="10%" style="color: red">&yen;${orderInfo.total }</td>
+									<td class="a1" width="10%">入住人数：</td><td class="a2" width="10%">${orderInfo.peopleNum }</td>
+									<td class="a1" width="10%">携带小孩：</td><td class="a2" width="10%">
+									<c:if test="${orderInfo.hasChild == 1}">携带孩子</c:if>
+									<c:if test="${orderInfo.hasChild == 0}">未带孩子</c:if>
+									</td>
+								</tr>
+								<tr>
+								<td class="a1" width="10%">订单状态：</td><td class="a2" width="10%" style="color: green">
+							   <c:choose>
+									<c:when test="${orderInfo.orderType == 0}">未执行订单</c:when>
+									<c:when test="${orderInfo.orderType == 1}">已执行订单</c:when>
+									<c:when test="${orderInfo.orderType == 2}">已撤销订单</c:when>
+									<c:when test="${orderInfo.orderType == 3}">异常订单</c:when>
+								</c:choose>	
+								</td>	
+								<td class="a1" width="10%">入住时间：</td><td class="a2" width="15%" style="color: #CC9900">
+								<fmt:formatDate  pattern="yyyy-MM-dd" value="${orderInfo.checkinDate }" /></td>
+								</tr>
+							</table>
+							 </div>  
+							  </div>
                             </div>
-                        </div>
-                    </div>
+                      </div>
                  </div>
-                 
-               
-          </div>      
-
-       </div>
-       
-       
+         
    </div>
+ </div>   
+
+
  
+     
+     
+ 	 
+
 <c:if test="${ Info != null }">
 ${Info }
 </c:if>
@@ -152,15 +169,8 @@ ${Info }
 	<script src="${pageContext.request.contextPath }/scripts/bootstrap.min.js" type="text/javascript"></script>
 	<script src="${pageContext.request.contextPath }/scripts/light-bootstrap-dashboard.js" type="text/javascript"></script>
 	<script src="${pageContext.request.contextPath }/scripts/jquery.raty.js" type="text/javascript"></script>
-	<script type="text/javascript">
-		<c:forEach items="${alleva }" var="eva">
-			$('#${eva.key.evaluationID }').raty({
-					  readOnly : true,
-					  score    : ${eva.key.mark }
-					});
-		</c:forEach>
-	</script>
-	
- 
+ 	<script type="text/javascript">
+ 	$('#star1').raty();
+ 	</script>
 </html>
  

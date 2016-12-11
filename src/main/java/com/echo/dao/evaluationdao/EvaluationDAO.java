@@ -25,7 +25,14 @@ public interface EvaluationDAO {
 	 * @param hotelID
 	 * @return
 	 */
-	public List<Evaluation> get(int hotelID);
+	public List<Evaluation> getByHotelID(int hotelID);
+	
+	/**
+	 * 获取用户的所有评论
+	 * @param hotelID
+	 * @return
+	 */
+	public List<Evaluation> getByCusID(int customerID);
 	
 	 
 

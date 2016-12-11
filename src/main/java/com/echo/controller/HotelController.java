@@ -19,16 +19,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.echo.domain.po.District;
 import com.echo.domain.po.Hotel;
+import com.echo.domain.po.RoomType;
 import com.echo.domain.vo.HotelSearchResult;
 import com.echo.domain.vo.HotelSearcher;
 import com.echo.domain.vo.RoomSearchResult;
+import com.echo.service.evaluationservice.EvaluationServiceImpl;
 import com.echo.service.hotelservice.HotelServiceImpl;
+import com.echo.service.roomservice.RoomServiceImpl;
 
 @Controller
 public class HotelController {
 	
 	@Autowired
-	public HotelServiceImpl hotelServiceImpl;
+	private HotelServiceImpl hotelServiceImpl;
+	
+	@Autowired
+	private EvaluationServiceImpl evaluationServiceImpl;
+	
+	@Autowired
+	private RoomServiceImpl roomServiceImpl;
 	
 	/**
 	 * 前往主页
@@ -50,9 +59,10 @@ public class HotelController {
 			//无该ID酒店，则前往主页
 			return "forward:/all";
 		}
-		List<RoomSearchResult>  res = hotelServiceImpl.getHotelRoomsInfo(hotel.getHotelID());//酒店的所有RoomSearchResult房间信息
+		List<RoomType> res = roomServiceImpl.getRoomTypeByHotelID(hotel.getHotelID());
 		map.put("hotel", hotel);
 		map.put("roomResults", res);
+		map.put("alleva", evaluationServiceImpl.getHotelEva(hotel.getHotelID()));
 		return "hotelInfo";
 	}
 

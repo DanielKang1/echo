@@ -82,14 +82,6 @@ public interface RoomDAO {
 	public List<Object[]> getRoomsByPrice(int hotelID, double floor, double ceiling);
 	
 	/**
-	 * 获取酒店的所有房间信息（RoomSearchResult）
-	 * @param hotelID
-	 * @return
-	 */
-	public List<Object[]> getAllRoomsSearchResults(int hotelID);
-	
-	
-	/**
 	 * 用于存储入住/退房信息
 	 * @param roomCheckItem
 	 * @return

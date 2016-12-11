@@ -39,13 +39,6 @@ public interface HotelService {
 	public Hotel getHotelByID(int hotelID);
 	
 	/**
-	 * 按照酒店ID获得所有房间信息，转化成RoomSearchResult
-	 * @param hotelID
-	 * @return
-	 */
-	public List<RoomSearchResult> getHotelRoomsInfo(int hotelID);
-	
-	/**
 	 * 按照HotelSearcher进行搜索，获得符合条件的HotelSearchResult(用于用户在网站上的搜索)
 	 * @param hotelSearcher
 	 * @return

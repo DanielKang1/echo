@@ -104,62 +104,72 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">评论列表</h4>
-                                <p class="category">我的历史评论信息</p>
+                                <h4 class="title">填写评论</h4>
                             </div>
                             <div class="content">
-                            
-	                            <c:forEach items="${alleva }" var="eva">
-	                            <div class="media" style="font-size: 10px;">
-	 					 			  <a class="media-left" href="#">
-								        <img class="media-object img-rounded" style="margin-top: 5px;height: 100px;width: 100px;" src="/echo/img/hotel/hotel1.jpg" >
-								      </a>
-								      <div class="media-body" style="padding-left: 30px;line-height:20px;">
-								        <div class="media-content">
-								        <h5 class="media-heading">${eva.value.hotelName }</h5> <div id="${eva.key.evaluationID }"></div>
-								        <a href="" class="res"><span style="color: #1597B8">${eva.value.city }</span></a>  ：
-							                <a href="" class="res"><span style="color: #1597B8"> ${eva.value.district }</span></a>    
-							                <span> ${eva.value.address }</span><br>
-						                	<span style="font-weight: bold;">优点</span>:${eva.key.merit } <br>
-						                	<span style="font-weight: bold;">缺点</span>:${eva.key.demerit } <br>
-						                	<span>${eva.key.comment } </span>
-						                </div>
-								      </div>
-								    </div>
-								    <hr>
-	                            </c:forEach>
-                            
+                             <form action="${pageContext.request.contextPath }/eva"  method="POST">
+                                 <input type="hidden" name="orderID" value="${order.orderID}">
+                            	 <table class="table table_honer">
+				                  <tr>
+				                      <th width="20%">酒店名称</th>
+				                      <td class="text-left">${order.hotel.hotelName }</td>
+				                  </tr>
+				                  <tr>
+				                      <th width="20%">订单号</th>
+				                      <td class="text-left">${order.orderID}</td>
+				                  </tr>
+				                  <tr>
+				                      <th width="20%">客房类型</th>
+				                      <td class="text-left">${order.roomType.typeName}</td>
+				                  </tr>
+				                  <tr>
+				                      <th width="20%">评分</th>
+				                      <td class="text-left"> <div id="star1"></div></td>
+				                  </tr>
+				                  <tr>
+				                      <th width="20%">优点</th>
+				                      <td class="text-left"> <input type="text" name="advantage" class="form-control"></td>
+				                  </tr>
+				                  <tr>
+				                      <th width="20%">优点</th>
+				                      <td class="text-left"> <input type="text" name="disadvantage" class="form-control"></td>
+				                  </tr>
+				                  <tr>
+				                      <th width="20%">综合评论</th>
+				                      <td class="text-left"><textarea class="form-control" rows="3" name="comment"></textarea></td>
+				                  </tr>
+				                 
+				                 </tbody>
+				       			</table>
+				       			  <input type="submit" class="btn btn-info btn-fill pull-right" style="margin-top: -20px;margin-right: 16px;" value="提交" />
+				       			    <br />
+								 </form>	    
                             </div>
                         </div>
                     </div>
                  </div>
                  
-               
           </div>      
 
        </div>
-       
-       
    </div>
+ </div>
  
-<c:if test="${ Info != null }">
-${Info }
-</c:if>
-
 </body>
 
 	<script src="${pageContext.request.contextPath }/scripts/jquery.min.js" type="text/javascript"></script>
 	<script src="${pageContext.request.contextPath }/scripts/bootstrap.min.js" type="text/javascript"></script>
 	<script src="${pageContext.request.contextPath }/scripts/light-bootstrap-dashboard.js" type="text/javascript"></script>
 	<script src="${pageContext.request.contextPath }/scripts/jquery.raty.js" type="text/javascript"></script>
-	<script type="text/javascript">
-		<c:forEach items="${alleva }" var="eva">
-			$('#${eva.key.evaluationID }').raty({
-					  readOnly : true,
-					  score    : ${eva.key.mark }
-					});
-		</c:forEach>
-	</script>
+ 	<script type="text/javascript">
+ 	$('#star1').raty({
+ 		path:"${pageContext.request.contextPath }/img/",
+ 		 click: function (score) {  
+             $("#form").attr("score",score); 
+         } 
+ 	});
+        
+ 	</script>
 	
  
 </html>

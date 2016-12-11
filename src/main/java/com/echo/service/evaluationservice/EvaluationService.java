@@ -26,5 +26,12 @@ public interface EvaluationService {
 	 * @return
 	 */
 	public List<Evaluation> getHotelEva(int hotelID);
+	
+	/**
+	 * 获取用户的所有评论
+	 * @param hotelID
+	 * @return
+	 */
+	public List<Evaluation> getCusEva(int customerID);
 
 }

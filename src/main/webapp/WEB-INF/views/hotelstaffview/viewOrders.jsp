@@ -154,10 +154,10 @@
 										<td class="a1" width="20%">订单状态：</td><td class="a2" width="20%" style="color: green">
 										<c:choose>
 											<c:when test="${order.orderType == 0}">未执行订单</c:when>
-											<c:when test="${order.orderType == 1}">执行中订单</c:when>
-											<c:when test="${order.orderType == 2}">已执行订单</c:when>
-											<c:when test="${order.orderType == 3}">已撤销订单</c:when>
-											<c:when test="${order.orderType == 4}">异常订单</c:when>
+											<c:when test="${order.orderType == 1}">已执行订单</c:when>
+											<c:when test="${order.orderType == 2}">已撤销订单</c:when>
+											<c:when test="${order.orderType == 3}">异常订单</c:when>
+											<c:when test="${order.orderType == 4}">已评价订单</c:when>
 										</c:choose>	
 										</td>	
 										<td class="a1" width="20%">入住时间：</td><td class="a2" width="30%" style="color: #CC9900">

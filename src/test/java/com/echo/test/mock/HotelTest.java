@@ -68,21 +68,6 @@ public class HotelTest {
 		verify(mockHotelDAOImpl,times(1)).getDistricts("南京");
 	}
 	
-	/**
-	 * 测试获取酒店所有房间统计信息
-	 */
-	@Test
-	public void testGetHotelRoomsInfo(){
-		List<Object[]> objResult = new ArrayList<>();
-		objResult.add( new Object[]{1,"豪华房",233,34});
-		objResult.add( new Object[]{2,"普通房",688,23});
-		when(mockRoomDAOImpl.getAllRoomsSearchResults(1)).thenReturn(objResult);
-		List<RoomSearchResult> res = mockHotelServiceImpl.getHotelRoomsInfo(1);
-		assertNotNull(res);
-		System.out.println("-------------checkIn-------------");
-		System.out.println(res);
-		verify(mockRoomDAOImpl,times(1)).getAllRoomsSearchResults(any(int.class));
-	}
 	
 	/**
 	 * 测试搜索酒店与房间（显示酒店信息以及酒店满足价格要求的房间信息）

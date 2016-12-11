@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%> 
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -109,14 +111,14 @@
 								      <tr class="title_"><td>客房类型</td><td>最多入住</td><td>床型</td> <td>价格</td><td>支付方式</td><td>预订</td></tr>
 								      </thead>
 								      <tbody>
-								      <c:forEach items="${roomResults}" var="roomResult">
+								      <c:forEach items="${roomResults}" var="roomType">
 								        <tr>
-									        <td>高级房${roomResult.roomTypeName }</td>
+									        <td>${roomType.typeName }</td>
 									        <td>2人</td>
 									        <td>大床</td>
-									        <td style="color: orange;">&yen;${roomResult.price }</td>
+									        <td style="color: orange;">&yen;${roomType.price }</td>
 									        <td style="color: green;font-weight: bold;">到店支付</td>
-									        <td class="text-center"><a class="btn btn-primary btn-xs" style="margin-top: -0px;" href="${pageContext.request.contextPath }/customer/order/hotel_${hotel.hotelID}&roomType_${roomResult.roomTypeID}">预订</a></td>
+									        <td class="text-center"><a class="btn btn-primary btn-xs" style="margin-top: -0px;" href="${pageContext.request.contextPath }/customer/order/hotel_${hotel.hotelID}&roomType_${roomType.typeID}">预订</a></td>
 								        </tr>
 								        </c:forEach>
 								      </tbody>
@@ -148,53 +150,26 @@
 					        <h3 class="panel-title">评论信息</h3>
 					      </div>
 					      <div class="panel-body">
-								<div class="media">
+					      
+					      	<c:forEach items="${alleva }" var="eva">
+					      	<div class="media">
 							      <div class="media-left text-center" >
 							        <img class="media-object img-rounded tx" src="${pageContext.request.contextPath }/img/head/tx1.jpg" >
-							        <span style="font-size: 10px;" >Jane*****</span>
+							        <span style="font-size: 10px;" >${eva.customerName }</span>
 							      </div>
 							      <div class="media-body" style="padding-left: 30px;">
-							        <div id="star1"></div>
+							        <div id="${eva.evaluationID }"></div>
 							        <div class="media-content">
-					                	<span style="font-weight: bold;">优点</span>:服务、硬件、地段、设施都好。 <br>
-					                	<span style="font-weight: bold;">缺点</span>:房间有时候有奇怪的“笃笃笃笃”的声音不知道从哪来的。 <br>
-					                	<span>酒店服务特别的好，从前台办理入住，到餐厅就餐，到房间服务，特别满意。看到有小孩还特意送来了小孩的洗漱用品。客房服务员张小婷和夏杰还给宝宝叠了兔子。酒店楼下就是德基广场，吃饭购物都很方便。唯一小遗憾是酒店内的高脚杯是正着放的，关抽屉的时候就给摔下来碎了，希望下次高脚杯可以倒着放，还稳当点，或者放在安全固定的地方。一定要到酒店梅苑餐厅吃饭，味道一级棒。</span>
+					                	<span style="font-weight: bold;">优点</span>:${eva.merit } <br>
+					                	<span style="font-weight: bold;">缺点</span>:${eva.demerit }  <br>
+					                	<span> ${eva.comment } </span>
 					                </div>
 							      </div>
 							    </div>
 							    <hr>
-							    
-							    <div class="media">
-							      <div class="media-left text-center" >
-							        <img class="media-object img-rounded tx" src="${pageContext.request.contextPath }/img/head/tx3.jpg" >
-							        <span style="font-size: 10px;" >Tom*****</span>
-							      </div>
-							      <div class="media-body" style="padding-left: 30px;">
-							        <div id="star2"></div>
-							        <div class="media-content">
-					                	<span style="font-weight: bold;">优点</span>:服务、硬件、地段、设施都好。 <br>
-					                	<span style="font-weight: bold;">缺点</span>:房间有时候有奇怪的“笃笃笃笃”的声音不知道从哪来的。 <br>
-					                	<span>酒店服务特别的好，从前台办理入住，到餐厅就餐，到房间服务，特别满意。看到有小孩还特意送来了小孩的洗漱用品。客房服务员张小婷和夏杰还给宝宝叠了兔子。酒店楼下就是德基广场，吃饭购物都很方便。唯一小遗憾是酒店内的高脚杯是正着放的，关抽屉的时候就给摔下来碎了，希望下次高脚杯可以倒着放，还稳当点，或者放在安全固定的地方。一定要到酒店梅苑餐厅吃饭，味道一级棒。</span>
-					                </div>
-							      </div>
-							    </div>
-							    <hr>
-							    
-							    <div class="media">
-							      <div class="media-left text-center" >
-							        <img class="media-object img-rounded tx" src="${pageContext.request.contextPath }/img/head/tx2.jpg" >
-							        <span style="font-size: 10px;" >Finch*****</span>
-							      </div>
-							      <div class="media-body" style="padding-left: 30px;">
-							        <div id="star3"></div>
-							        <div class="media-content">
-					                	<span style="font-weight: bold;">优点</span>:服务、硬件、地段、设施都好。 <br>
-					                	<span style="font-weight: bold;">缺点</span>:房间有时候有奇怪的“笃笃笃笃”的声音不知道从哪来的。 <br>
-					                	<span>酒店服务特别的好，从前台办理入住，到餐厅就餐，到房间服务，特别满意。看到有小孩还特意送来了小孩的洗漱用品。客房服务员张小婷和夏杰还给宝宝叠了兔子。酒店楼下就是德基广场，吃饭购物都很方便。唯一小遗憾是酒店内的高脚杯是正着放的，关抽屉的时候就给摔下来碎了，希望下次高脚杯可以倒着放，还稳当点，或者放在安全固定的地方。一定要到酒店梅苑餐厅吃饭，味道一级棒。</span>
-					                </div>
-							      </div>
-							    </div>
-							    <hr>
+					      	</c:forEach>
+					      	<c:if test="${ alleva!=null && fn:length(alleva) == 0 }"> <div style="text-align:center;"><span style="font-size: 10px;color: #999999;">没有评论</span></div></c:if>
+					      
 					     	
 						  </div>
 			   	  </div>
@@ -383,7 +358,12 @@
         minDate: new Date()
     });
 	
-
+	<c:forEach items="${alleva }" var="eva">
+		$('#${eva.evaluationID }').raty({
+				  readOnly : true,
+				  score    : ${eva.mark }
+				});
+	</c:forEach>
 	
 	$('#star1').raty({
 		  readOnly : true,

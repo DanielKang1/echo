@@ -106,11 +106,7 @@ public class RoomDAO_stub implements RoomDAO {
 		return null;
 	}
 
-	@Override
-	public List<Object[]> getAllRoomsSearchResults(int hotelID) {
-		System.out.println("getAllRoomsSearchResults successfully");
-		return null;
-	}
+ 
 
 	@Override
 	public RoomCheckItem getCheckItemByItemID(int id) {

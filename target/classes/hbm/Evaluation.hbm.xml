@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2016-12-8 13:37:07 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.echo.domain.po.Evaluation" table="EVALUATION">
+        <id name="evaluationID" type="int">
+            <column name="EVALUATION_ID" />
+            <generator class="native" />
+        </id>
+        <property name="customerID" type="int">
+            <column name="CUSTOMER_ID" />
+        </property>
+        <property name="customerName" type="java.lang.String">
+            <column name="CUSTOMER_NAME" />
+        </property>
+        <property name="hotelID" type="int">
+            <column name="HOTEL_ID" />
+        </property>
+        <property name="RoomTypeName" type="java.lang.String">
+            <column name="ROOMTYPE_NAME" />
+        </property>
+        <property name="mark" type="double">
+            <column name="MARK" />
+        </property>
+        <property name="merit" type="java.lang.String">
+            <column name="MERIT" />
+        </property>
+        <property name="demerit" type="java.lang.String">
+            <column name="DEMERIT" />
+        </property>
+        <property name="comment" type="java.lang.String">
+            <column name="COMMENT" />
+        </property>
+        <property name="releaseTime" type="java.util.Date">
+            <column name="RELEASETIME" />
+        </property>
+    </class>
+</hibernate-mapping>

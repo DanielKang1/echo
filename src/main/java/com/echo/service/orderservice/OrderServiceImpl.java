@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.echo.dao.orderdao.OrderDAOImpl;
+import com.echo.domain.po.Hotel;
 import com.echo.domain.po.Order;
 import com.echo.domain.type.OrderStatusType;
 
@@ -62,7 +63,8 @@ public class OrderServiceImpl implements OrderService {
 	public Map<String, Integer> getOrdersSize(int hotelID) {
 		Map<String,Integer> map = new HashMap<>();
 		int unexecuted  = orderDAOImpl.getOrdersSizeByType(hotelID,OrderStatusType.UNEXECUTED);
-		int executed  = orderDAOImpl.getOrdersSizeByType(hotelID,OrderStatusType.EXECUTED);
+		int executed  = orderDAOImpl.getOrdersSizeByType(hotelID,OrderStatusType.EXECUTED)
+						+orderDAOImpl.getOrdersSizeByType(hotelID,OrderStatusType.EVALUATED);
 		int cancelled  = orderDAOImpl.getOrdersSizeByType(hotelID,OrderStatusType.CANCELLED);
 		int abnormal  = orderDAOImpl.getOrdersSizeByType(hotelID,OrderStatusType.ABNORMAL);
 		map.put("unexecuted",unexecuted );
@@ -93,6 +95,23 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public Order getOrderByID(int orderID) {
 		return orderDAOImpl.get(orderID);
+	}
+	
+	/**
+	 * 对用户的预订记录进行统计
+	 */
+	public Map<Hotel,Integer> getOrderTimesByHotel(int customerID){
+		List<Order> orders = getCustomerOrders(customerID);
+		Map<Hotel,Integer> map = new HashMap<>();
+		for(Order order : orders){
+			if(map.containsKey(order.getHotel())){
+				int times = map.get(order.getHotel());
+				map.put(order.getHotel(), times+1);
+			}else{
+				map.put(order.getHotel(), 1);
+			}
+		}
+		return map;
 	}
 
 }

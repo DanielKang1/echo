@@ -49,10 +49,5 @@ public class HotelService_stub implements HotelService {
 		System.out.println("getHotelByID successfully");
 		return null;
 	}
-
-	@Override
-	public List<RoomSearchResult> getHotelRoomsInfo(int hotelID) {
-		System.out.println("getHotelRoomsInfo successfully");
-		return null;
-	}
+ 
 }

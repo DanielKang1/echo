@@ -35,6 +35,9 @@
 	<mvc:default-servlet-handler/>
 	<mvc:annotation-driven />  
 	
+	<!-- 在类中加上@RequestMapping时，有些在JS中的图片地址会找不到，这里是一种解决方法 -->
+	<mvc:resources location="/img/" mapping="/customer/img/**"/>
+	
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/customer/beMember"/>

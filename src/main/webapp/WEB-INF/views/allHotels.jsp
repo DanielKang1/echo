@@ -8,7 +8,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
 	<meta name="author" content="Shen Jie NJU Software">
-	<meta name="description" content="Just Demo.  2016/10/19 1:03 累  愿天下没有强迫症 感谢艺龙的图片...">
+	<meta name="description" content="Just Demo.  2016/10/19 1:03  ">
 	<title>Echo Hotel 主页</title>
 	<link rel="icon" type="image/png" href="${pageContext.request.contextPath }/img/hotelicon.png">
 	<link href="${pageContext.request.contextPath }/css/CSSreset.min.css" rel="stylesheet"/>

@@ -8,7 +8,8 @@ import com.echo.domain.po.Evaluation;
  */
 public class EvaluationDAO_driver {
     public void drive(EvaluationDAO evaluationDAO) {
-        evaluationDAO.get(0);
+        evaluationDAO.getByCusID(0);
+        evaluationDAO.getByHotelID(0);
         evaluationDAO.add(new Evaluation());
         evaluationDAO.delete(0);
 

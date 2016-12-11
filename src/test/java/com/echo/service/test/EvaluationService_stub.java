@@ -23,4 +23,10 @@ public class EvaluationService_stub implements EvaluationService {
         System.out.println("show Evaluation");
         return null;
     }
+
+	@Override
+	public List<Evaluation> getCusEva(int customerID) {
+		 System.out.println("show getCusEva");
+		return null;
+	}
 }

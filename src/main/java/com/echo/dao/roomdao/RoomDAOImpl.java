@@ -128,13 +128,6 @@ public class RoomDAOImpl implements RoomDAO{
 		return result;
 	}
 	
-	@Override
-	public List<Object[]> getAllRoomsSearchResults(int hotelID) {
-		String sql = "SELECT type_id ,type_name, price , count(*) FROM room WHERE hotel_id = ? AND status = 1 GROUP BY type_id";   
-		Query query = getSession().createSQLQuery(sql);
-		List<Object[]> result = query.setInteger(0,hotelID).list();
-		return result;
-	}
 
 	@Override
 	public boolean add(RoomCheckItem roomCheckItem) {

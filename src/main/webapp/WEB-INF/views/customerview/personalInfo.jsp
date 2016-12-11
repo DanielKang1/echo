@@ -25,43 +25,42 @@
     <div class="sidebar" data-color="azure" data-image="${pageContext.request.contextPath }/img/signup-bg1.jpg">    
     	<div class="sidebar-wrapper">
             <div class="logo">
-                <a href="" class="simple-text">
+                <a href="${pageContext.request.contextPath }/all" class="simple-text">
                     Echo Hotel
                 </a>
             </div>
                        
             <ul class="nav">
                 <li class="active">
-                    <a href="dashboard.html">
+                    <a href="${pageContext.request.contextPath }/customer/info" target="_blank">
                         <i class="fa fa-user"></i>
                         <p>账号与密码</p>
                     </a>            
                 </li>
                 <li>
-                    <a href="user.html">
+                    <a href="${pageContext.request.contextPath }/all" target="_blank">
                         <i class="fa fa-search"></i>
                         <p>酒店查询</p>
                     </a>
                 </li> 
                 <li>
-                    <a href="table.html">
+                     <a href="${pageContext.request.contextPath }/customer/goViewOrders" target="_blank">
                     	<i class="fa fa-list-ul"></i>
                         <p>订单一览</p>
                     </a>        
                 </li>
                 <li>
-                    <a href="icons.html">
+                    <a href="${pageContext.request.contextPath }/goViewEvaluations" target="_blank">
                         <i class="fa fa-comments"></i>
                         <p>我的评论</p>
                     </a>        
                 </li>
                 <li>
-                    <a href="${pageContext.request.contextPath }/customer/goMemberHandle">
+                    <a href="${pageContext.request.contextPath }/customer/goMemberHandle" target="_blank">
                          <i class="fa fa-check"></i>
                         <p>Echo会员</p>
                     </a>        
                 </li>
-               
             </ul> 
     	</div>
     </div>
@@ -93,7 +92,6 @@
                                 <li><a href="${pageContext.request.contextPath }/customer/signout"><i class="fa fa-sign-out"></i>退出</a>
                               </ul>
                         </li>
-                        
                     </ul>
                 </div>
             </div>
@@ -340,7 +338,7 @@
                                      <div class="col-md-6">
                                          <div class="form-group">
                                              <label  style="float: left;">生日</label>
-                                             <form:input path="birthday" type="text" class="form-control"/><form:errors path="birthday" cssClass="error"></form:errors> 
+                                             <form:input path="birthday" type="text" class="form-control form_date"/><form:errors path="birthday" cssClass="error"></form:errors> 
                                          </div>        
                                      </div>
                                  </div>
@@ -402,6 +400,7 @@
 	<c:if test="${requestScope.creditDeficiency != null }">
 		${requestScope.creditDeficiency}
 	</c:if>
+	
 
 </body>
 
@@ -409,7 +408,9 @@
 	<script src="${pageContext.request.contextPath }/scripts/bootstrap.min.js" type="text/javascript"></script>
 	<script src="${pageContext.request.contextPath }/scripts/bootstrap-notify.js"></script>
 	<script src="${pageContext.request.contextPath }/scripts/light-bootstrap-dashboard.js" type="text/javascript"></script>
+	<script src="${pageContext.request.contextPath }/scripts/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
+	
      $(function(){
 	     $(":input[name='oldpwdzz']").change(function(){
 		     var val=$(this).val();
@@ -438,5 +439,17 @@
             });
             
     	});
+     
+ 	$('.form_date').datetimepicker({
+         language:  'en',
+         format: "yyyy-mm-dd",
+         weekStart: 1,
+         todayBtn:  1,
+ 		autoclose: 1,
+ 		todayHighlight: 1,
+ 		startView: 2,
+ 		minView: 2,
+ 		forceParse: 0
+     });
 	</script>
 </html>

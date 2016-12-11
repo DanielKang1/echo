@@ -5,9 +5,9 @@ import java.util.Date;
 
 public class Evaluation implements Serializable{
 	
-	private static final long serialVersionUID = -6420571709225024923L;
+	private static final long serialVersionUID = 8031488957831289769L;
 	
-	private int EvalutionID;      //评论ID
+	private int evaluationID;      //评论ID
 	private int customerID;       //客户ID
 	private String customerName;   //客户姓名
 	private int hotelID;            //酒店ID
@@ -18,24 +18,12 @@ public class Evaluation implements Serializable{
 	private String comment;        //评论内容
 	private Date releaseTime;       //发布时间
 	
-	
-	public String getMerit() {
-		return merit;
+ 
+	public int getEvaluationID() {
+		return evaluationID;
 	}
-	public void setMerit(String merit) {
-		this.merit = merit;
-	}
-	public String getDemerit() {
-		return demerit;
-	}
-	public void setDemerit(String demerit) {
-		this.demerit = demerit;
-	}
-	public int getEvalutionID() {
-		return EvalutionID;
-	}
-	public void setEvalutionID(int evalutionID) {
-		EvalutionID = evalutionID;
+	public void setEvaluationID(int evaluationID) {
+		this.evaluationID = evaluationID;
 	}
 	public int getCustomerID() {
 		return customerID;
@@ -67,6 +55,18 @@ public class Evaluation implements Serializable{
 	public void setMark(double mark) {
 		this.mark = mark;
 	}
+	public String getMerit() {
+		return merit;
+	}
+	public void setMerit(String merit) {
+		this.merit = merit;
+	}
+	public String getDemerit() {
+		return demerit;
+	}
+	public void setDemerit(String demerit) {
+		this.demerit = demerit;
+	}
 	public String getComment() {
 		return comment;
 	}
@@ -81,10 +81,11 @@ public class Evaluation implements Serializable{
 	}
 	@Override
 	public String toString() {
-		return "Evaluation [EvalutionID=" + EvalutionID + ", customerID=" + customerID + ", customerName="
+		return "Evaluation [EvaluationID=" + evaluationID + ", customerID=" + customerID + ", customerName="
 				+ customerName + ", hotelID=" + hotelID + ", RoomTypeName=" + RoomTypeName + ", mark=" + mark
 				+ ", merit=" + merit + ", demerit=" + demerit + ", comment=" + comment + ", releaseTime=" + releaseTime
 				+ "]";
 	}
+	
  
 }

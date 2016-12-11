@@ -23,43 +23,42 @@
     <div class="sidebar" data-color="azure" data-image="${pageContext.request.contextPath }/img/signup-bg1.jpg">    
     	<div class="sidebar-wrapper">
             <div class="logo">
-                <a href="" class="simple-text">
+                <a href="${pageContext.request.contextPath }/all" class="simple-text">
                     Echo Hotel
                 </a>
             </div>
                        
             <ul class="nav">
                 <li>
-                    <a href="dashboard.html">
+                    <a href="${pageContext.request.contextPath }/customer/info" target="_blank">
                         <i class="fa fa-user"></i>
                         <p>账号与密码</p>
                     </a>            
                 </li>
                 <li>
-                    <a href="user.html">
+                    <a href="${pageContext.request.contextPath }/all" target="_blank">
                         <i class="fa fa-search"></i>
                         <p>酒店查询</p>
                     </a>
                 </li> 
                 <li>
-                    <a href="table.html">
+                     <a href="${pageContext.request.contextPath }/customer/goViewOrders" target="_blank">
                     	<i class="fa fa-list-ul"></i>
                         <p>订单一览</p>
                     </a>        
                 </li>
                 <li>
-                    <a href="icons.html">
+                    <a href="${pageContext.request.contextPath }/goViewEvaluations" target="_blank">
                         <i class="fa fa-comments"></i>
                         <p>我的评论</p>
                     </a>        
                 </li>
-                <li  class="active">
-                    <a href="maps.html">
+                <li class="active">
+                    <a href="${pageContext.request.contextPath }/customer/goMemberHandle" target="_blank">
                          <i class="fa fa-check"></i>
                         <p>Echo会员</p>
                     </a>        
                 </li>
-               
             </ul> 
     	</div>
     </div>
@@ -78,9 +77,10 @@
                         <li><a href=""><span style="font-size: 14px;color: #666666;">度假主题</span></a></li> 
                     </ul>
                     
-                    <ul class="nav navbar-nav navbar-right">
+                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
-                              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span style="font-size: 14px;color: #666666;"> Customer1</span> <b class="caret"></b> </a>
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                              	<span style="font-size: 14px;color: #666666;"> ${sessionScope.authCustomer.nickname}</span> <b class="caret"></b> </a>
                               <ul class="dropdown-menu">
                                 <li><a href="#"><i class="fa fa-home"></i>我的主页</a></li>
                                 <li><a href="#"><i class="fa fa-cog"></i>设置</a></li>
@@ -90,7 +90,6 @@
                                 <li><a href="${pageContext.request.contextPath }/customer/signout"><i class="fa fa-sign-out"></i>退出</a>
                               </ul>
                         </li>
-                        
                     </ul>
                 </div>
             </div>

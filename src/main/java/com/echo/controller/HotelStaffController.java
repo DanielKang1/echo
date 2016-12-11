@@ -138,7 +138,13 @@ public class HotelStaffController {
 			return "hotelstaffview/hotelManagement";
 		}
 		int hotelID = hotelStaff.getHotelID();
+		
 		List<Order> orders = orderServicceImpl.getHotelOrdersByType(hotelID, orderStatus);
+		if(orderStatus == OrderStatusType.EXECUTED){
+			List<Order> orders2 = orderServicceImpl.getHotelOrdersByType(hotelID, OrderStatusType.EVALUATED);
+			orders.addAll(orders2);
+		}
+
 		map.put("orders", orders);
 		map.put("ordersSize",orderServicceImpl.getOrdersSize(hotelStaff.getHotelID()));
 		return "hotelstaffview/viewOrders";

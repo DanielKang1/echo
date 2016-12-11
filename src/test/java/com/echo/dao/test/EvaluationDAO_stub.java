@@ -19,8 +19,15 @@ public class EvaluationDAO_stub implements EvaluationDAO {
         return false;
     }
 
-    public List<Evaluation> get(int hotelID) {
-        System.out.println("show evaluation");
-        return null;
-    }
+	@Override
+	public List<Evaluation> getByHotelID(int hotelID) {
+		 System.out.println("show getByHotelID");
+		return null;
+	}
+
+	@Override
+	public List<Evaluation> getByCusID(int customerID) {
+		 System.out.println("show getByCusID");
+		return null;
+	}
 }
