@@ -1,11 +1,16 @@
 package com.echo.controller;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -21,8 +26,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 import com.echo.domain.po.CreditChangeItem;
 import com.echo.domain.po.Customer;
 import com.echo.domain.po.Hotel;
+import com.echo.domain.po.HotelPromotionItem;
 import com.echo.domain.po.HotelStaff;
 import com.echo.domain.po.Order;
+import com.echo.domain.po.PromotionDate;
 import com.echo.domain.po.Room;
 import com.echo.domain.po.RoomCheckItem;
 import com.echo.domain.po.RoomType;
@@ -32,6 +39,7 @@ import com.echo.domain.type.RoomStatusType;
 import com.echo.domain.vo.Login;
 import com.echo.service.creditservice.CreditServiceImpl;
 import com.echo.service.customerservice.CustomerServiceImpl;
+import com.echo.service.hotelpromotionservice.HotelPromotionServiceImpl;
 import com.echo.service.hotelservice.HotelServiceImpl;
 import com.echo.service.hotelstaffservice.HotelStaffServiceImpl;
 import com.echo.service.orderservice.OrderServiceImpl;
@@ -42,6 +50,8 @@ import com.google.code.kaptcha.Constants;
 @RequestMapping("/hotelstaff") 
 @Controller
 public class HotelStaffController {
+	
+	public static final Logger logger = Logger.getLogger(HotelStaffController.class);
 	
 	@Autowired
 	public HotelStaffServiceImpl hotelstaffserviceImpl;
@@ -55,6 +65,11 @@ public class HotelStaffController {
 	public CreditServiceImpl creditServiceImpl;
 	@Autowired
 	public CustomerServiceImpl customerServiceImpl;
+	@Autowired
+	public HotelPromotionServiceImpl hotelPromotionServiceImpl;
+	
+	
+	//------------------------------------------------------------登录/退出-------------------------------------------------------------
 	
 	/**
 	 * 前往登录页面
@@ -89,9 +104,21 @@ public class HotelStaffController {
 		}
 		hotelstaffserviceImpl.decodeHotelStaff(staff);
 		map.put("authHotelStaff", staff);
-		
+		logger.info("酒店管理人员登录  HotelID："+staff.getHotelID()+" StaffName："+staff.getStaffName());
 		return "redirect:/hotelstaff/hotelManage";
 	}
+	
+	
+	@RequestMapping(value="/signout")
+	public String signout(Map<String,Object> map){
+		/*
+		 * session中删除操作已放到SignoutInterceptors拦截器中完成
+		 */
+		return "redirect:/hotelstaff/signin";
+	}
+	
+	
+	//------------------------------------------------------------酒店基础信息管理-------------------------------------------------------------
 	
 	/**
 	 * 前往管理页
@@ -108,7 +135,53 @@ public class HotelStaffController {
 		return "hotelstaffview/hotelManagement";
 	}
 	
+	/**
+	 * 修改酒店信息
+	 */
+	@RequestMapping(value="/updateInfo",method=RequestMethod.POST)
+	public String updateInfo(@RequestParam("district") String district,@RequestParam("address") String address,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff,
+			@RequestParam("facility") String facility,@RequestParam("briefIntro") String briefIntro,Map<String, Object> map){
+		Hotel hotel = hotelServiceImpl.getHotelByID(hotelStaff.getHotelID());
+		if(hotel != null){
+			hotel.setAddress(address);
+			hotel.setBriefIntro(briefIntro);
+			hotel.setFacility(facility);
+			hotel.setDistrict(district);
+		}
+		if(hotelServiceImpl.updateBasicInfo(hotel)){
+			map.put("hotelInfo", "<script>alert('更新成功！');</script>");
+			logger.info("酒店信息更新成功 HotelID："+hotelStaff.getHotelID());
+		}else{
+			map.put("hotelInfo", "<script>alert('更新失败！');</script>");
+			logger.error("酒店信息更新失败 HotelID："+hotelStaff.getHotelID());
+		}
+		return "forward:/hotelstaff/hotelManage";
+	}
+	
+	/**
+	 * 更新星级
+	 * @param starLevel
+	 * @param hotelStaff
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping(value="/modifyStarLevel",method=RequestMethod.POST)
+	public String updateStarLevel(@RequestParam("starLevel") byte starLevel,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff,Map<String, Object> map){
+		Hotel hotel = hotelServiceImpl.getHotelByID(hotelStaff.getHotelID());
+		hotel.setStarLevel(starLevel);
+		if(hotelServiceImpl.updateBasicInfo(hotel)){
+			map.put("hotelInfo", "<script>alert('更新成功！');</script>");
+			logger.info("酒店星级更新成功 HotelID："+hotelStaff.getHotelID());
+		}else{
+			map.put("hotelInfo", "<script>alert('更新失败！');</script>");
+			logger.error("酒店星级更新失败 HotelID："+hotelStaff.getHotelID());
+		}
+		return "forward:/hotelstaff/hotelManage";
+	}
  
+	
+	//------------------------------------------------------------酒店订单管理-------------------------------------------------------------
+	
 	/**
 	 * 查看订单
 	 * @param hotelStaff
@@ -151,17 +224,19 @@ public class HotelStaffController {
 	}
 	
 	/**
-	 * 前往入住/退房处理页
-	 * @param map
+	 * 搜索用户的未执行订单
+	 * @param phone
 	 * @param hotelStaff
+	 * @param map
 	 * @return
 	 */
-	@RequestMapping(value="/goCheckHandle")
-	public String goCheckHandle(Map<String,Object> map,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff){
-		//存放酒店还未进行退房处理的RoomCheckItem列表（也就是显示那些客房在住）
-		map.put("notCheckoutRoomCheckItems", roomServiceImpl.getNotCheckoutRoomCheckItems(hotelStaff.getHotelID()));
-		return "hotelstaffview/checkHandle";
+	@RequestMapping(value="/searchOrder")
+	public String searchOrderByPhone(@RequestParam("phone") String phone ,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff,Map<String,Object> map){
+		List<Order> result = orderServicceImpl.getOrdersByPhone(phone, hotelStaff.getHotelID());
+		map.put("unexecutedOrders", result);
+		return "forward:/hotelstaff/goCheckHandle";
 	}
+	
 	
 	/**
 	 * 在“当前入住信息”中查看订单信息
@@ -181,19 +256,21 @@ public class HotelStaffController {
 	}
 	
 	
+	//-----------------------------------------------------------入住/退房处理-------------------------------------------------------------
+	
 	/**
-	 * 搜索用户的未执行订单
-	 * @param phone
-	 * @param hotelStaff
+	 * 前往入住/退房处理页
 	 * @param map
+	 * @param hotelStaff
 	 * @return
 	 */
-	@RequestMapping(value="/searchOrder")
-	public String searchOrderByPhone(@RequestParam("phone") String phone ,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff,Map<String,Object> map){
-		List<Order> result = orderServicceImpl.getOrdersByPhone(phone, hotelStaff.getHotelID());
-		map.put("unexecutedOrders", result);
-		return "forward:/hotelstaff/goCheckHandle";
+	@RequestMapping(value="/goCheckHandle")
+	public String goCheckHandle(Map<String,Object> map,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff){
+		//存放酒店还未进行退房处理的RoomCheckItem列表（也就是显示那些客房在住）
+		map.put("notCheckoutRoomCheckItems", roomServiceImpl.getNotCheckoutRoomCheckItems(hotelStaff.getHotelID()));
+		return "hotelstaffview/checkHandle";
 	}
+	
 	
 	/**
 	 * 入住处理操作
@@ -204,27 +281,29 @@ public class HotelStaffController {
 	@RequestMapping(value="/checkin_{orderID}",method=RequestMethod.GET)
 	public String checkinHandle(@PathVariable("orderID") int orderID, RedirectAttributesModelMap map){
 		Order order = orderServicceImpl.getOrderByID(orderID);
-		
-		//1.房间状态处理
-		List<Room> selectBooked = roomServiceImpl.checkIn(order.getRoomType().getTypeID(),order.getBookingNum());
-		//2.记录入住信息
-		roomServiceImpl.addRoomCheckinItem(order, selectBooked);
-		//3.订单状态处理
-		orderServicceImpl.updateOrderStatus(order, OrderStatusType.EXECUTED);
-		//4.添加信用处理记录
-		CreditChangeItem creditChangeItem = new CreditChangeItem(order.getCustomerID(),order.getOrderID(),CreditOperationType.ORDER_EXECUTED,
-				order.getHotel().getHotelID(),order.getHotel().getHotelName(),order.getTotal());
-		creditServiceImpl.generateItem(creditChangeItem);
-		//5.修改用户信用记录值
-		Customer targetCustomer = customerServiceImpl.getBasicInfo(order.getCustomerID());
-		customerServiceImpl.modifyCredit(targetCustomer, order.getTotal());
-		
-		StringBuilder sb = new StringBuilder("入住的房间号是：");
-		for(Room room : selectBooked){
-			sb.append(room.getRoomNumber() +" ");
+		if(order != null){
+			//1.房间状态处理
+			List<Room> selectBooked = roomServiceImpl.checkIn(order.getRoomType().getTypeID(),order.getBookingNum());
+			//2.记录入住信息
+			roomServiceImpl.addRoomCheckinItem(order, selectBooked);
+			//3.订单状态处理
+			orderServicceImpl.updateOrderStatus(order, OrderStatusType.EXECUTED);
+			//4.添加信用处理记录
+			CreditChangeItem creditChangeItem = new CreditChangeItem(order.getCustomerID(),order.getOrderID(),CreditOperationType.ORDER_EXECUTED,
+					order.getHotel().getHotelID(),order.getHotel().getHotelName(),order.getTotal());
+			creditServiceImpl.generateItem(creditChangeItem);
+			//5.修改用户信用记录值
+			Customer targetCustomer = customerServiceImpl.getBasicInfo(order.getCustomerID());
+			customerServiceImpl.modifyCredit(targetCustomer, order.getTotal());
+			
+			StringBuilder sb = new StringBuilder("入住的房间号是：");
+			for(Room room : selectBooked){
+				sb.append(room.getRoomNumber() +" ");
+			}
+			map.addFlashAttribute("roomNumbers", "<script>alert('"+sb.toString()+"');</script>");
+			logger.info("酒店入住处理  HotelID："+order.getHotel().getHotelID()+"  订单ID："+order.getOrderID()+"----"+sb.toString());
 		}
-		System.out.println(sb.toString());
-		map.addFlashAttribute("roomNumbers", "<script>alert('"+sb.toString()+"');</script>");
+		
 		return "redirect:/hotelstaff/goCheckHandle";
 	}
 	
@@ -268,6 +347,7 @@ public class HotelStaffController {
 				if(roomServiceImpl.updateRoomCheckinItem(roomCheckItemID)){
 					map.put("checkoutSuccess","<script>alert('退房处理成功！');</script>");
 				}
+				logger.info("退房处理成功  hotelID："+hotelStaff.getHotelID()+"  roomCheckItemID："+roomCheckItemID);
 			}
 			return "forward:/hotelstaff/goCheckHandle";
 	}
@@ -330,6 +410,8 @@ public class HotelStaffController {
 	}
 	
 	
+	//-----------------------------------------------------------客房管理-------------------------------------------------------------
+	
 	/**
 	 * 该酒店客房列表的JSON信息
 	 * @param hotelStaff
@@ -341,7 +423,9 @@ public class HotelStaffController {
 		return hotelServiceImpl.getAllRooms(hotelStaff.getHotelID());
 	}
 	
-	
+	/**
+	 * 前往客房管理页
+	 */
 	@RequestMapping(value="/viewRooms")
 	public String viewRooms(@ModelAttribute("authHotelStaff") HotelStaff hotelStaff,Map<String,Object> map){
 		List<RoomType> roomTypes = roomServiceImpl.getRoomTypeByHotelID(hotelStaff.getHotelID());
@@ -349,13 +433,18 @@ public class HotelStaffController {
 		return "hotelstaffview/viewRooms";
 	}
 	
-	
+	/**
+	 * 前往修改房间类型页
+	 */
 	@RequestMapping(value="/roomType/{roomTypeID}",method=RequestMethod.GET)
 	public String goUpdateRoomType(@PathVariable("roomTypeID") int roomTypeID,Map<String,Object> map){
 		map.put("roomType", roomServiceImpl.getRoomTypeByTypeID(roomTypeID));
 		return "forward:/hotelstaff/viewRooms";
 	}
 	
+	/**
+	 * 更新房间类型
+	 */
 	@RequestMapping(value="/roomType/{roomTypeID}",method=RequestMethod.PUT)
 	public String updateRoomType(@PathVariable("roomTypeID") int roomTypeID,Map<String,Object> map,
 			@RequestParam("price") double price,@RequestParam("typeName") String typeName,@RequestParam("typeDesc") String typeDesc){
@@ -369,15 +458,20 @@ public class HotelStaffController {
 		roomType.setTypeName(typeName);
 		if(roomServiceImpl.updateRoomType(roomType) && roomServiceImpl.updateRoomsInfo(roomTypeID, price,typeName)){
 			map.put("roomTypeInfo", "<script>alert('已成功修改信息！');</script>");
+			logger.info("成功更新房间信息 roomTypeID："+roomTypeID);
 		}
 		return "forward:/hotelstaff/viewRooms";
 	}
 	
+	/**
+	 * 删除房间类型
+	 */
 	@RequestMapping(value="/roomType/{roomTypeID}",method=RequestMethod.DELETE)
 	public String deleteRoomType(@PathVariable("roomTypeID") int roomTypeID,Map<String,Object> map){
 		if(roomServiceImpl.canDeleteRoomType(roomTypeID)){
 			if(roomServiceImpl.deleteRoomType(roomTypeID)){
 				map.put("roomTypeInfo", "<script>alert('删除成功');</script>");
+				logger.info("成功删除房间类型 roomTypeID："+roomTypeID);
 				return "forward:/hotelstaff/viewRooms";
 			}
 		}
@@ -385,6 +479,9 @@ public class HotelStaffController {
 		return "forward:/hotelstaff/viewRooms";
 	}
 	
+	/**
+	 * 添加新房间类型
+	 */
 	@RequestMapping(value="/roomType/",method=RequestMethod.POST)
 	public String addRoomType(RedirectAttributesModelMap map,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff,
 			@RequestParam("price") double price,@RequestParam("typeName") String typeName,@RequestParam("typeDesc") String typeDesc){
@@ -395,20 +492,28 @@ public class HotelStaffController {
 		roomType.setHotelID(hotelStaff.getHotelID());
 		if(roomServiceImpl.addRoomType(roomType)){
 			map.addFlashAttribute("roomTypeInfo", "<script>alert('新的客房类型添加成功。');</script>");
+			logger.info("成功添加新房间类型 typeName："+typeName);
 		}
 		return "redirect:/hotelstaff/viewRooms";
 	}
 	
+	/**
+	 * 添加房间
+	 */
 	@RequestMapping(value="/room/",method=RequestMethod.POST)
 	public String addRoom(RedirectAttributesModelMap map,@RequestParam("roomNum") int roomNum,@RequestParam("roomType") int roomType,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff){
 		RoomType roomtype = roomServiceImpl.getRoomTypeByTypeID(roomType);
 		Room room = new Room(hotelStaff.getHotelID(), roomNum, roomtype.getTypeID(), roomtype.getTypeName(), roomtype.getPrice(), RoomStatusType.FREE);
 		if(roomServiceImpl.addNewRoom(room)){
 			map.addFlashAttribute("roomInfo", "<script>alert('新客房添加成功。');</script>");
+			logger.info("成功添加新房间 roomtypeID："+roomtype.getTypeID()+" 房间号："+roomNum);
 		}
 		return "redirect:/hotelstaff/viewRooms";
 	}
 	
+	/**
+	 * 进入修改客房信息页
+	 */
 	@RequestMapping(value="/room/chooseRoom",method=RequestMethod.POST)
 	public String goUpdateRoom(Map<String,Object> map,@RequestParam("roomNum") int roomNum,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff){
 		Room room = roomServiceImpl.getRoomByRoomMumber(hotelStaff.getHotelID(), roomNum);
@@ -421,10 +526,11 @@ public class HotelStaffController {
 		return "forward:/hotelstaff/viewRooms";
 	}
 	
+	/**
+	 * 修改客房信息
+	 */
 	@RequestMapping(value="/room",method=RequestMethod.PUT)
 	public String updateRoom(Map<String,Object> map,@RequestParam(value="roomType") int roomType,@RequestParam(value="roomNumber") int roomNumber,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff){
-		System.out.println(roomNumber);
-		System.out.println(roomType);
 		Room room = roomServiceImpl.getRoomByRoomMumber(hotelStaff.getHotelID(), roomNumber);
 		room.setTypeID(roomType);
 		RoomType roomtype = roomServiceImpl.getRoomTypeByTypeID(roomType);
@@ -432,10 +538,14 @@ public class HotelStaffController {
 		room.setPrice(roomtype.getPrice());
 		if(roomServiceImpl.updateRoom(room)){
 			map.put("roomInfo", "<script>alert('客房信息修改成功。');</script>");
+			logger.info("客房信息修改成功：HotelID："+hotelStaff.getHotelID()+" 房间号："+roomNumber);
 		}
 		return "forward:/hotelstaff/viewRooms";
 	}
 	
+	/**
+	 * 删除房间
+	 */
 	@RequestMapping(value="/room/delete/{roomNumber}")
 	public String deleteRoom(Map<String,Object> map,@PathVariable("roomNumber") int roomNumber,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff){
 		Room room = roomServiceImpl.getRoomByRoomMumber(hotelStaff.getHotelID(), roomNumber);
@@ -445,42 +555,173 @@ public class HotelStaffController {
 		}
 		if(roomServiceImpl.deleteRoom(room.getId())){
 			map.put("roomInfo", "<script>alert('删除成功！');</script>");
+			logger.info("客房成功删除：HotelID："+hotelStaff.getHotelID()+" 房间号："+roomNumber);
 		}
 		return "forward:/hotelstaff/viewRooms";
 	}
 	
 	
+	//-----------------------------------------------------------酒店营销策略-------------------------------------------------------------
 	
 	/**
-	 * 修改酒店信息
+	 * 前往营销策略页
 	 */
-	@RequestMapping(value="/updateInfo",method=RequestMethod.POST)
-	public String updateInfo(@RequestParam("district") String district,@RequestParam("address") String address,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff,
-			@RequestParam("facility") String facility,@RequestParam("briefIntro") String briefIntro,Map<String, Object> map){
-		Hotel hotel = hotelServiceImpl.getHotelByID(hotelStaff.getHotelID());
-		hotel.setAddress(address);
-		hotel.setBriefIntro(briefIntro);
-		hotel.setFacility(facility);
-		hotel.setDistrict(district);
-		if(hotelServiceImpl.updateBasicInfo(hotel)){
-			map.put("hotelInfo", "<script>alert('更新成功！');</script>");
-		}else{
-			map.put("hotelInfo", "<script>alert('更新失败！');</script>");
-		}
-		return "forward:/hotelstaff/hotelManage";
+	@RequestMapping(value="/promotions",method=RequestMethod.GET)
+	public String goPromotionPage(@ModelAttribute("authHotelStaff") HotelStaff hotelStaff,Map<String,Object> map){
+		//可以在添加酒店时加入
+//		if(hotelPromotionServiceImpl.getHotelPromotionItem(hotelStaff.getHotelID()) == null){
+//			HotelPromotionItem item = new HotelPromotionItem(hotelStaff.getHotelID(), 1, false, 10, 1, false, 1, false);
+//			hotelPromotionServiceImpl.addHotelPromotionItem(item);
+//		}
+		HotelPromotionItem hotelPromotionItem = hotelPromotionServiceImpl.getHotelPromotionItem(hotelStaff.getHotelID());
+		List<PromotionDate> prodates = hotelPromotionServiceImpl.getHotelPromotionDateList(hotelStaff.getHotelID());
+		map.put("hotelPromotionItem", hotelPromotionItem);
+		map.put("prodates", prodates);
+		return "hotelstaffview/promotions";
 	}
 	
-	@RequestMapping(value="/modifyStarLevel",method=RequestMethod.POST)
-	public String updateStarLevel(@RequestParam("starLevel") byte starLevel,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff,Map<String, Object> map){
-		Hotel hotel = hotelServiceImpl.getHotelByID(hotelStaff.getHotelID());
-		hotel.setStarLevel(starLevel);
-		if(hotelServiceImpl.updateBasicInfo(hotel)){
-			map.put("hotelInfo", "<script>alert('更新成功！');</script>");
+	/**
+	 * 开启/关闭 生日折扣
+	 * @param checkbox1
+	 * @param hotelStaff
+	 * @return
+	 */
+	@RequestMapping(value="/bir_switch_update",method=RequestMethod.POST)
+	public String birthdaySwitchUpdate(@RequestParam(value="checkbox1",required=false) Object checkbox1,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff){
+		HotelPromotionItem hotelPromotionItem = hotelPromotionServiceImpl.getHotelPromotionItem(hotelStaff.getHotelID());
+		if(null == checkbox1){
+			hotelPromotionItem.setBirthdaySwitch(false);
+			hotelPromotionServiceImpl.updateHotelPromotionItem(hotelPromotionItem);
 		}else{
-			map.put("hotelInfo", "<script>alert('更新失败！');</script>");
+			hotelPromotionItem.setBirthdaySwitch(true);
+			hotelPromotionServiceImpl.updateHotelPromotionItem(hotelPromotionItem);
 		}
-		return "forward:/hotelstaff/hotelManage";
+		return "redirect:/hotelstaff/promotions";
 	}
 	
+	/**
+	 * 更新生日折扣信息
+	 * @param discount
+	 * @param hotelStaff
+	 * @return
+	 */
+	@RequestMapping(value="/bir_update",method=RequestMethod.POST)
+	public String birthdayUpdate(@RequestParam(value="discount") float discount,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff){
+		HotelPromotionItem hotelPromotionItem = hotelPromotionServiceImpl.getHotelPromotionItem(hotelStaff.getHotelID());
+		hotelPromotionItem.setBirthdayDiscount(discount);
+		hotelPromotionServiceImpl.updateHotelPromotionItem(hotelPromotionItem);
+		return "redirect:/hotelstaff/promotions";
+	}
+	
+	/**
+	 * 开启/关闭 预订特定数量折扣
+	 * @param checkbox2
+	 * @param hotelStaff
+	 * @return
+	 */
+	@RequestMapping(value="/num_switch_update",method=RequestMethod.POST)
+	public String bookingNumSwitchUpdate(@RequestParam(value="checkbox2",required=false) Object checkbox2,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff){
+		HotelPromotionItem hotelPromotionItem = hotelPromotionServiceImpl.getHotelPromotionItem(hotelStaff.getHotelID());
+		if(null == checkbox2){
+			hotelPromotionItem.setBookingDiscountSwitch(false);
+			hotelPromotionServiceImpl.updateHotelPromotionItem(hotelPromotionItem);
+		}else{
+			hotelPromotionItem.setBookingDiscountSwitch(true);
+			hotelPromotionServiceImpl.updateHotelPromotionItem(hotelPromotionItem);
+		}
+		return "redirect:/hotelstaff/promotions";
+	}
+	/**
+	 * 更新预订特定数量折扣信息 
+	 * @param discount
+	 * @param number
+	 * @param hotelStaff
+	 * @return
+	 */
+	@RequestMapping(value="/num_update",method=RequestMethod.POST)
+	public String bookingNumUpdate(@RequestParam(value="discount") float discount,@RequestParam(value="number") int number,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff){
+		HotelPromotionItem hotelPromotionItem = hotelPromotionServiceImpl.getHotelPromotionItem(hotelStaff.getHotelID());
+		hotelPromotionItem.setBookingDiscount(discount);
+		hotelPromotionItem.setBookingMeasure(number);
+		hotelPromotionServiceImpl.updateHotelPromotionItem(hotelPromotionItem);
+		return "redirect:/hotelstaff/promotions";
+	}
+	
+	/**
+	 * 开启/关闭  合作企业折扣
+	 * @param checkbox3
+	 * @param hotelStaff
+	 * @return
+	 */
+	@RequestMapping(value="/coo_switch_update",method=RequestMethod.POST)
+	public String cooUserSwitchUpdate(@RequestParam(value="checkbox3",required=false) Object checkbox3,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff){
+		HotelPromotionItem hotelPromotionItem = hotelPromotionServiceImpl.getHotelPromotionItem(hotelStaff.getHotelID());
+		if(null == checkbox3){
+			hotelPromotionItem.setCooperativeEnterpriseSwitch(false);
+			hotelPromotionServiceImpl.updateHotelPromotionItem(hotelPromotionItem);
+		}else{
+			hotelPromotionItem.setCooperativeEnterpriseSwitch(true);
+			hotelPromotionServiceImpl.updateHotelPromotionItem(hotelPromotionItem);
+		}
+		return "redirect:/hotelstaff/promotions";
+	}
+	
+	/**
+	 * 更新合作企业折扣
+	 * @param discount
+	 * @param hotelStaff
+	 * @return
+	 */
+	@RequestMapping(value="/coo_update",method=RequestMethod.POST)
+	public String cooUpdate(@RequestParam(value="discount") float discount,@ModelAttribute("authHotelStaff") HotelStaff hotelStaff){
+		HotelPromotionItem hotelPromotionItem = hotelPromotionServiceImpl.getHotelPromotionItem(hotelStaff.getHotelID());
+		hotelPromotionItem.setCooperativeEnterpriseDiscount(discount);
+		hotelPromotionServiceImpl.updateHotelPromotionItem(hotelPromotionItem);
+		return "redirect:/hotelstaff/promotions";
+	}
+	
+	/**
+	 * 添加特定日期段促销数据
+	 * @param hotelStaff
+	 * @param start 开始日期
+	 * @param end  结束日期
+	 * @param discount 折扣率
+	 * @return
+	 * @throws ParseException
+	 */
+	@RequestMapping(value="/promotiondate",method=RequestMethod.POST)
+	public String addPromotionDate(@ModelAttribute("authHotelStaff") HotelStaff hotelStaff,@RequestParam(value="start") String start,@RequestParam(value="end") String end,@RequestParam(value="discount") float discount) throws ParseException{
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date start_ = dateFormat.parse(start);
+		Date end_ = dateFormat.parse(end);
+		PromotionDate promotionDate = new PromotionDate(hotelStaff.getHotelID(), start_, end_, discount);
+		hotelPromotionServiceImpl.addPromotionDateItem(promotionDate);
+		return "redirect:/hotelstaff/promotions";
+	}
+	
+	/**
+	 * 删除特定日期段促销数据
+	 * @param hotelStaff
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value="/promotiondate/delete/{id}",method=RequestMethod.GET)
+	public String deletePromotionDate(@ModelAttribute("authHotelStaff") HotelStaff hotelStaff,@PathVariable("id") int id){
+		if(hotelStaff != null){
+			List<PromotionDate> prodates = hotelPromotionServiceImpl.getHotelPromotionDateList(hotelStaff.getHotelID());
+			boolean flag = false;
+			for(PromotionDate pdate : prodates){
+				if(pdate.getId() == id){
+					flag = true;
+					break;
+				}
+			}
+			if(flag){
+				hotelPromotionServiceImpl.deletePromotionDateItem(id);
+			}
+		}
+		
+		return "redirect:/hotelstaff/promotions";
+	}
 	
 }

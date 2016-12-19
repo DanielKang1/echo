@@ -48,6 +48,10 @@ public class OrderServiceImpl implements OrderService {
 	public List<Order> getHotelOrders(int hotelID) {
 		return orderDAOImpl.getOrdersByHID(hotelID);
 	}
+	
+	public List<Order> getUnexecutedOrders(){
+		return orderDAOImpl.getUnexecutedOrders();
+	}
 
 	@Override
 	public List<Order> getHotelOrdersByType(int hotelID, byte orderType) {
@@ -113,5 +117,11 @@ public class OrderServiceImpl implements OrderService {
 		}
 		return map;
 	}
+	
+	public List<Order> getAbnormalOrdersToday(){
+		return orderDAOImpl.getAbnormalOrdersToday();
+	}
+	
+
 
 }

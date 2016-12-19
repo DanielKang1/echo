@@ -8,6 +8,8 @@ public interface CustomerDAO {
 	
 	public Customer get(int customer_id);
 	
+	public Customer get(String name);
+	
 	//用于登录
 	public Customer get(String value,String pwd);
 	

@@ -25,6 +25,8 @@ public interface HotelDAO {
 	 */
 	public Hotel get(int hotelID);
 	
+	public Hotel get(String hotelName);
+	
 	/**
 	 * 对编号为hotelID的酒店的房间进行搜索，以客房类型（typeID）进行分组，
 	 * 将（房间类型ID，房间类型名称，价格，数量）取出，放入Object[]中

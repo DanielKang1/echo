@@ -90,6 +90,18 @@ public class CustomerDAOimpl  implements CustomerDAO{
 		}
 		return customer;
 	}
+	
+	@Override
+	public Customer get(String name) {
+		String hql = "FROM Customer WHERE nickname = ?";   
+		Query query = getSession().createQuery(hql);
+		List<Customer> result = query.setString(0,DESUtils.getEncryptString(name)).list();
+		Customer customer = null;
+		if(result.size() > 0 ){
+			customer = result.get(0);
+		}
+		return customer;
+	}
 
 	/**
 	 * 用于用户登录：

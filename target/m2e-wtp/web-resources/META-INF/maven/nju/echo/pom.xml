@@ -28,6 +28,12 @@
             <version>${mysql.jdbc.version}</version>  
         </dependency>  
         
+        <dependency>
+		    <groupId>com.mchange</groupId>
+		    <artifactId>c3p0</artifactId>
+		    <version>0.9.2.1</version>
+		</dependency>
+        
 		<!-- hibernate-c3p0 -->
 		<dependency>
 		    <groupId>org.hibernate</groupId>

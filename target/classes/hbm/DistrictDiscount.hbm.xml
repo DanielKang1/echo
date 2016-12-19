@@ -8,8 +8,8 @@
             <column name="ID" />
             <generator class="native" />
         </id>
-        <property name="districtID" type="int">
-            <column name="DISTRICT_ID" />
+        <property name="cityName" type="java.lang.String">
+            <column name="CITY_NAME" />
         </property>
         <property name="districtName" type="java.lang.String">
             <column name="DISTRICT_NAME" />

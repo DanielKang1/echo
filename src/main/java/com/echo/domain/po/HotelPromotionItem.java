@@ -17,14 +17,20 @@ public class HotelPromotionItem implements Serializable{
 	private boolean cooperativeEnterpriseSwitch;    //合作企业折扣策略开关
 	//特定日期段折扣 因为在网站营销策略中同样拥有，单独做成了PromotionDate
 	
-	public HotelPromotionItem(int hotelID, double birthdayDiscount, int bookingMeasure, double bookingDiscount,
-			double cooperativeEnterpriseDiscount) {
+	public HotelPromotionItem(int hotelID, double birthdayDiscount, boolean birthdaySwitch, int bookingMeasure,
+			double bookingDiscount, boolean bookingDiscountSwitch, double cooperativeEnterpriseDiscount,
+			boolean cooperativeEnterpriseSwitch) {
 		this.hotelID = hotelID;
 		this.birthdayDiscount = birthdayDiscount;
+		this.birthdaySwitch = birthdaySwitch;
 		this.bookingMeasure = bookingMeasure;
 		this.bookingDiscount = bookingDiscount;
+		this.bookingDiscountSwitch = bookingDiscountSwitch;
 		this.cooperativeEnterpriseDiscount = cooperativeEnterpriseDiscount;
+		this.cooperativeEnterpriseSwitch = cooperativeEnterpriseSwitch;
 	}
+	
+	public HotelPromotionItem(){}
 
 	public int getId() {
 		return id;

@@ -99,7 +99,8 @@ public class CustomerController {
 		if(StringUtils.isNoneBlank(orderUrl)){
 			return "redirect:"+orderUrl;
 		}
-		return "customerview/personalInfo";
+		logger.info("用户登录："+loginCustomer.getCustomer_id()+" "+loginCustomer.getNickname());
+		return "redirect:/customer/info";
 	}
 	
 	
@@ -148,10 +149,10 @@ public class CustomerController {
 		customerServiceImpl.encodeCustomer(customer);
 		//用户填写的值都符合要求时，保存用户数据
 		if(customerServiceImpl.register(customer)){
-			logger.info("添加了新用户:"+tmpUsername);
+			logger.info("新注册用户："+tmpUsername);
 		}else{
 			map.put("errorRegInfo", "系统处理异常，请您再次尝试 :) ");
-			logger.error("用户注册异常");
+			logger.error("注册异常");
 			return "signup";
 		}
 		return "signupSuccess";
@@ -202,8 +203,14 @@ public class CustomerController {
 			map.put("modifyError", "<script type='text/javascript'>alert('填入的参数有误，修改失败。') </script>");
 			return "customerview/personalInfo";
 		}
-		customerServiceImpl.modifyInfo(customer);
-		customerServiceImpl.decodeCustomer(customer);
+		try {
+			customerServiceImpl.modifyInfo(customer);
+			customerServiceImpl.decodeCustomer(customer);
+			logger.info("Customer个人信息修改："+customer.getCustomer_id()+" "+customer.getNickname());
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Customer个人信息修改异常："+e);
+		}
 		map.put("modifySuc", "<script type='text/javascript'>alert('信息修改成功！') </script>");
 		return "redirect:/customer/info";
 	}
@@ -229,7 +236,13 @@ public class CustomerController {
 					map.put("modifyPwdError", "<script type='text/javascript'>alert('Error:密码长度应在6-14位！') </script>");
 				}
 				else{
-					customerServiceImpl.modifyPwd(customer, newpwd);
+					try {
+						customerServiceImpl.modifyPwd(customer, newpwd);
+						logger.info("Customer修改密码："+customer.getCustomer_id()+" "+customer.getNickname());
+					} catch (Exception e) {
+						e.printStackTrace();
+						logger.error("Customer密码修改异常："+e);
+					}
 					customerServiceImpl.decodeCustomer(customer);
 					map.put("modifyPwdSuc", "<script type='text/javascript'>alert('密码修改成功！') </script>");
 				}
@@ -299,6 +312,7 @@ public class CustomerController {
 	
 	/**
 	 * 生成订单操作
+	 * @throws  
 	 */
 	@RequestMapping(value="/order/submitOrder&hotel_{hotelID}&roomType_{roomTypeID}",method=RequestMethod.POST)
 	public String generateOrder(@PathVariable("hotelID") Integer hotelID,@PathVariable("roomTypeID") Integer roomTypeID,
@@ -306,42 +320,24 @@ public class CustomerController {
 			@RequestParam("checkinDate") String checkinDate,@RequestParam("checkoutDate") String checkoutDate,
 			@RequestParam("bookingNum") Integer bookingNum,@RequestParam("peopleNum") Integer peopleNum,@RequestParam("roomPrice") Double roomPrice,
 			@RequestParam("hasChild") byte hasChild,@RequestParam("captcha") String captcha,
-			@RequestParam("reservedName") String reservedName,@RequestParam("reservedPhone") String reservedPhone){
+			@RequestParam("reservedName") String reservedName,@RequestParam("reservedPhone") String reservedPhone) {
 		
 		//获得入住及退房日期
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date checkindate = null;
-		Date checkoutdate = null;
+		Date checkindate = DateUtils.getDate(checkinDate);
+		Date checkoutdate = DateUtils.getDate(checkoutDate);
 		Date latestDate = null;
-		try {
-			 checkindate = sdf.parse(checkinDate);
-			 checkoutdate = sdf.parse(checkoutDate);
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return "redirect:/all";
-		}
 		
 		//提交订单前务必先验证住的日子的客房是否已被预订满
-		System.out.println("-----"+hotelServiceImpl.allowBookingOrNot(checkindate, checkoutdate, roomTypeID, bookingNum));
+//		System.out.println("-----"+hotelServiceImpl.allowBookingOrNot(checkindate, checkoutdate, roomTypeID, bookingNum));
 		if(!hotelServiceImpl.allowBookingOrNot(checkindate, checkoutdate, roomTypeID, bookingNum)){
 				map.addFlashAttribute("OrderErrorInfo", "<script>alert('预订失败。该类型客房在您选择的时间段内已经被预订满！您可以调整预订数量或入住时间。');</script>");
 				return "redirect:/customer/order/hotel_"+hotelID+"&roomType_"+roomTypeID;
 		}
 		
-		//惯例：宾馆的入住时间为14：00，离店时间为正午12：00
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(checkindate);
-		calendar.add(Calendar.HOUR, 14);  
-		checkindate = calendar.getTime();  //入住时间
-		
-		calendar.setTime(checkindate);
-		calendar.add(Calendar.HOUR, -14);
-		calendar.add(Calendar.DAY_OF_MONTH, 1);
-		latestDate = calendar.getTime(); //最晚入住时间（入住那天的24点）
-		
-		calendar.setTime(checkoutdate);
-		calendar.add(Calendar.HOUR, 12);  
-		checkoutdate = calendar.getTime();  //退房时间
+		//将用户输入的日期转化成真正的入住/退房/最迟日期 （惯例：宾馆的入住时间为14：00，离店时间为正午12：00）
+		DateUtils.getCorrectiveCheckinDate(checkindate);   //入住时间
+		DateUtils.getCorrectiveCheckoutDate(checkoutdate); //退房时间
+		DateUtils.getCorrectiveLatestDate(checkindate);   //最晚入住时间（入住那天的24点）
 		
 		Order order = new Order();
 		order.setOrderType(OrderStatusType.UNEXECUTED);
@@ -359,10 +355,12 @@ public class CustomerController {
 		order.setHasChild(hasChild);
 		order.setTotal(DateUtils.getDaysDiff(checkoutdate, checkindate)*roomPrice*bookingNum);
 		if(orderServiceImpl.generateOrder(order)){
-			//使用RedirectAttributesModelMap可以在redirect时放Attribute，可防止重复提交！
+			logger.info("新添加订单  用户ID："+order.getCustomerID()+" 酒店ID："+order.getHotel().getHotelID()+" 预留手机号："+order.getReservedPhone() );
+			//使用RedirectAttributesModelMap可以在redirect时放Attribute，可防止重复提交。
 			map.addFlashAttribute("orderInfo", "<script>alert('您已成功预订！到店支付房费"+order.getTotal()+"！');</script>");
 			return "redirect:/all";
 		}else{
+			logger.error("订单生成异常  用户ID："+order.getCustomerID()+" 酒店ID："+order.getHotel().getHotelID());
 			map.addFlashAttribute("orderInfo", "<script>alert('预订失败...请重新尝试...');</script>");
 			return "redirect:/all";
 		}
@@ -398,8 +396,10 @@ public class CustomerController {
 	public String cancelOrder(@PathVariable("orderID") int orderID,Map<String,Object> map){
 		Order order = orderServiceImpl.getOrderByID(orderID);
 		if(orderServiceImpl.updateOrderStatus(order, OrderStatusType.CANCELLED)){
+			logger.info("取消订单  订单号："+order.getOrderID()+" 用户ID："+order.getCustomerID() );
 			map.put("Info","<script type='text/javascript'>alert('取消订单成功！') </script>" );
 		}else{
+			logger.error("取消订单失败  订单号："+order.getOrderID()+" 用户ID："+order.getCustomerID() );
 			map.put("Info","<script type='text/javascript'>alert('取消订单失败.') </script>" );
 		}
 		return "forward:/customer/goViewOrders";
@@ -437,8 +437,14 @@ public class CustomerController {
 	 */
 	@RequestMapping(value="beMember",method=RequestMethod.GET)
 	public String beMember(@ModelAttribute("authCustomer") Customer customer,Map<String,Object> map){
-		customerServiceImpl.beMember(customer);
-		customerServiceImpl.decodeCustomer(customer);
+		try {
+			customerServiceImpl.beMember(customer);
+			customerServiceImpl.decodeCustomer(customer);
+			logger.info("用户"+customer.getCustomer_id()+" "+customer.getNickname()+"成为一般会员");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("成为一般会员失败 ："+customer.getCustomer_id()+" "+customer.getNickname()+" "+e);
+		}
 		return "customerview/member";
 	}
 	
@@ -456,8 +462,14 @@ public class CustomerController {
 			map.put("VIPInfo", "<script>alert('您已经是VIP会员了')</script>");
 			return "customerview/member";
 		}
-		customerServiceImpl.beVIPMember(customer);
-		customerServiceImpl.decodeCustomer(customer);
+		try {
+			customerServiceImpl.beVIPMember(customer);
+			customerServiceImpl.decodeCustomer(customer);
+			logger.info("用户"+customer.getCustomer_id()+" "+customer.getNickname()+"成为VIP会员");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("成为VIP会员失败 ："+customer.getCustomer_id()+" "+customer.getNickname()+" "+e);
+		}
 		return "pay";
 	}
 	

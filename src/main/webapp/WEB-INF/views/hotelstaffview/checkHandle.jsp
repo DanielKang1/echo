@@ -33,38 +33,43 @@
                 </a>
             </div>
                        
-            <ul class="nav">
+                        <ul class="nav">
                 <li>
-                    <a href="dashboard.html">
+                    <a href="${pageContext.request.contextPath }/hotelstaff/hotelManage" target="_blank">
                         <i class="fa fa-building"></i>
                         <p>基本信息</p>
                     </a>            
                 </li>
                 <li>
-                    <a href="user.html">
+                    <a href="${pageContext.request.contextPath }/hotelstaff/goCheckHandle" target="_blank">
                         <i class="fa fa-check-square-o"></i>
                         <p>入住处理</p>
                     </a>
                 </li> 
                 <li>
-                    <a href="table.html">
+                    <a href="${pageContext.request.contextPath }/hotelstaff/goCheckHandle" target="_blank">
                     	<i class="fa fa-minus-square-o"></i>
                         <p>退房处理</p>
                     </a>        
                 </li>
                 <li>
-                    <a href="icons.html">
+                    <a href="${pageContext.request.contextPath }/hotelstaff/viewRooms" target="_blank">
                         <i class="fa fa-comments"></i>
                         <p>客房管理</p>
                     </a>        
                 </li>
                 <li>
-                    <a href="${pageContext.request.contextPath }/customer/goMemberHandle" >
+                    <a href="${pageContext.request.contextPath }/hotelstaff/viewOrders" target="_blank">
                          <i class="fa fa-calendar"></i>
                         <p>查看订单</p>
                     </a>        
                 </li>
-               
+                <li>
+                    <a href="${pageContext.request.contextPath }/hotelstaff/promotions" target="_blank">
+                         <i class="fa fa-shopping-cart"></i>
+                        <p>酒店促销</p>
+                    </a>        
+                </li>
             </ul> 
     	</div>
     </div>
@@ -90,7 +95,7 @@
                                 <li><a href="#"><i class="fa fa-building"></i>酒店查询</a></li>
                                 <li><a href="#"><i class="fa fa-th-list"></i>查看订单</a></li>
                                 <li class="divider"></li>
-                                <li><a href="${pageContext.request.contextPath }/customer/signout"><i class="fa fa-sign-out"></i>退出</a>
+                                <li><a href="${pageContext.request.contextPath }/hotelstaff/signout"><i class="fa fa-sign-out"></i>退出</a>
                               </ul>
                         </li>
                         

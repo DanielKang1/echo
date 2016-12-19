@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2016-12-12 23:10:51 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.echo.domain.po.WebMarketer" table="WEBMARKETER">
+        <id name="marketerID" type="int">
+            <column name="MARKETER_ID" />
+            <generator class="native" />
+        </id>
+        <property name="marketerName" type="java.lang.String">
+            <column name="MARKETER_NAME" />
+        </property>
+        <property name="pwdsalt" type="java.lang.String">
+            <column name="PWDSALT" />
+        </property>
+        <property name="pwd" type="java.lang.String">
+            <column name="PWD" />
+        </property>
+    </class>
+</hibernate-mapping>

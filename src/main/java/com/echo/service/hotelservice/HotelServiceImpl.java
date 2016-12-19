@@ -39,6 +39,10 @@ public class HotelServiceImpl implements HotelService{
 	public boolean addHotel(Hotel hotel) {
 		return hotelDAOImpl.add(hotel);
 	}
+	
+	public int addHotelReturnID(Hotel hotel) {
+		return hotelDAOImpl.addReturnID(hotel);
+	}
 
 	@Override
 	public boolean updateBasicInfo(Hotel hotel) {
@@ -87,6 +91,10 @@ public class HotelServiceImpl implements HotelService{
 	@Override
 	public Hotel getHotelByID(int hotelID) {
 		return hotelDAOImpl.get(hotelID);
+	}
+	
+	public Hotel getHotelByName(String hotelName){
+		return hotelDAOImpl.get(hotelName);
 	}
 
 	@Override

@@ -31,7 +31,14 @@ public class WebPromotionServiceImpl implements WebPromotionService{
 	public boolean deleteMemberDiscount(int levelID) {
 		return webPromotionDAOImpl.deleteMemberDiscount(levelID);
 	}
-
+	
+	public List<MemberDiscount> getAllMemberDiscount(){
+		return webPromotionDAOImpl.getAllMemberDiscount();
+	}
+	
+	public List<DistrictDiscount> getAllDistrictDiscount(){
+		return webPromotionDAOImpl.getAll();
+	}
 
 	@Override
 	public MemberDiscount getMemberDiscountByLevelID(int levelID) {

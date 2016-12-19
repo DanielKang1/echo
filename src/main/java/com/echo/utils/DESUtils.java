@@ -63,7 +63,13 @@ public class DESUtils {
 //			}
 //		}
 		
-		System.out.println(getDecryptString("bkkGrKE9iEMfJAfVsP+M2w=="));
+//		System.out.println(getDecryptString("bkkGrKE9iEMfJAfVsP+M2w=="));
 //		System.out.println(getDecryptString("gJQ9O+q34qk="));
+		System.out.println(getEncryptString("张一"));
+//		String salt = EncodeUtils.getSalt(16);
+//		System.out.println(salt);
+//		String pwd = "admin1";
+//		String hash = EncodeUtils.SHA1Encode(salt+pwd);
+//		System.out.println(hash);
 	}
 }

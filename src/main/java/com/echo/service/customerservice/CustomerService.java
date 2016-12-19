@@ -38,6 +38,8 @@ public interface CustomerService {
 	 */
 	public Customer getBasicInfo(int custoermID);
 	
+	public Customer getBasicInfo(String name);
+	
 	/**
 	 * 普通用户注册为普通会员
 	 * @param customerID

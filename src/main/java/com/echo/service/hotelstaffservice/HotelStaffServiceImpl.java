@@ -13,7 +13,7 @@ import com.echo.utils.EncodeUtils;
 public class HotelStaffServiceImpl implements HotelStaffService{
 	
 	@Autowired
-	public HotelStaffDAOImpl hotelStaffDAOImpl;
+	private HotelStaffDAOImpl hotelStaffDAOImpl;
 
 	@Override
 	public HotelStaff login(String fieldValue, String pwd) {
@@ -37,6 +37,16 @@ public class HotelStaffServiceImpl implements HotelStaffService{
 	public HotelStaff getBasicInfo(int staffID) {
 		return hotelStaffDAOImpl.get(staffID);
 	}
+	
+	@Override
+	public HotelStaff getBasicInfoByHotelID(int hotelID) {
+		return hotelStaffDAOImpl.getByHotelID(hotelID);
+	}
+	
+	@Override
+	public HotelStaff getBasicInfo(String name) {
+		return hotelStaffDAOImpl.get(name);
+	}
 
 	@Override
 	public boolean updateStaff(HotelStaff staff) {
@@ -51,5 +61,7 @@ public class HotelStaffServiceImpl implements HotelStaffService{
 		staff.setPhone(DESUtils.getDecryptString(staff.getPhone()));
 		return staff;
 	}
+
+
 
 }

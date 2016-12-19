@@ -18,14 +18,21 @@ public class Hotel implements Serializable{
 	
 	public Hotel(){}
 	
-	public Hotel(int hotelID, String hotelName, String city, String district, byte starLevel) {
-		super();
+	public Hotel(String hotelName, String city, String district, byte starLevel) {
+		this.hotelName = hotelName;
+		this.city = city;
+		this.district = district;
+		this.starLevel = starLevel;
+	}
+	
+	public Hotel(int hotelID,String hotelName, String city, String district, byte starLevel) {
 		this.hotelID = hotelID;
 		this.hotelName = hotelName;
 		this.city = city;
 		this.district = district;
 		this.starLevel = starLevel;
 	}
+	
 	public String getCity() {
 		return city;
 	}

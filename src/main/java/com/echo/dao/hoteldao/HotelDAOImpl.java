@@ -36,6 +36,10 @@ public class HotelDAOImpl implements HotelDAO{
 			return false;
 		}
 	}
+	
+	public int addReturnID(Hotel hotel) {
+		return (int) getSession().save(hotel);
+	}
 
 	@Override
 	public boolean update(Hotel hotel) {
@@ -47,6 +51,18 @@ public class HotelDAOImpl implements HotelDAO{
 			return false;
 		}
 		
+	}
+	
+	@Override
+	public Hotel get(String hotelName) {
+		String hql = "FROM Hotel WHERE hotelName = ?";   
+		Query query = getSession().createQuery(hql);
+		List<Hotel> result = query.setString(0,hotelName).list();
+		Hotel hotel = null;
+		if(result.size() > 0 ){
+			hotel = result.get(0);
+		}
+		return hotel;
 	}
 
 	@Override

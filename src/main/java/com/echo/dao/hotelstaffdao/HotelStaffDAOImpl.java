@@ -34,6 +34,30 @@ public class HotelStaffDAOImpl implements HotelStaffDAO {
 		}
 		return staff;
 	}
+	
+	@Override
+	public HotelStaff getByHotelID(int hotelID) {
+		String hql = "FROM HotelStaff WHERE hotelID = ?";   
+		Query query = getSession().createQuery(hql);
+		List<HotelStaff> result = query.setInteger(0,hotelID).list();
+		HotelStaff staff = null;
+		if(result.size() > 0 ){
+			staff = result.get(0);
+		}
+		return staff;
+	}
+	
+	@Override
+	public HotelStaff get(String name) {
+		String hql = "FROM HotelStaff WHERE staffName = ?";   
+		Query query = getSession().createQuery(hql);
+		List<HotelStaff> result = query.setString(0,DESUtils.getEncryptString(name)).list();
+		HotelStaff staff = null;
+		if(result.size() > 0 ){
+			staff = result.get(0);
+		}
+		return staff;
+	}
 
 	@Override
 	public HotelStaff get(String fieldValue, String pwd) {
@@ -101,5 +125,8 @@ public class HotelStaffDAOImpl implements HotelStaffDAO {
 			return false;
 		}
 	}
+
+	
+
 
 }

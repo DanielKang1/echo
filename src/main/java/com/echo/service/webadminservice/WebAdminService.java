@@ -1,9 +1,8 @@
 package com.echo.service.webadminservice;
 
 import java.util.List;
-
 import com.echo.domain.po.CusEnterItem;
-import com.echo.domain.po.Enterprise;
+import com.echo.domain.po.WebAdmin;
 
 public interface WebAdminService {
 	
@@ -12,14 +11,7 @@ public interface WebAdminService {
 	 * @param webAdminID
 	 * @param pwd
 	 */
-	public void login(int webAdminID, String pwd);
-	
-	/**
-	 * 添加合作企业
-	 * @param enterprise
-	 * @return
-	 */
-	public boolean addEnterprise(Enterprise enterprise);
+	public WebAdmin login(String name, String pwd);
 	
 	/**
 	 * 删除合作企业

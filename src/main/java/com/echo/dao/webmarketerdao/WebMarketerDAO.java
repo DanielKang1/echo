@@ -11,6 +11,8 @@ public interface WebMarketerDAO {
 	 */
 	public WebMarketer get(int marketerID);
 	
+	public WebMarketer get(String name);
+	
 	/**
 	 * 用于网站营销人员的登录
 	 * @param fieldValue Name/ID中的一种值

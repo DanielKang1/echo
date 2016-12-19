@@ -12,6 +12,7 @@ import com.echo.dao.webpromotiondao.WebPromotionDAOImpl;
 import com.echo.domain.po.Customer;
 import com.echo.domain.po.MemberDiscount;
 import com.echo.domain.type.CustomerAttributeType;
+import com.echo.domain.type.MemberLevelType;
 import com.echo.utils.DESUtils;
 import com.echo.utils.EncodeUtils;
 
@@ -59,22 +60,37 @@ public class CustomerServiceImpl implements CustomerService{
 	public Customer getBasicInfo(int custoermID) {
 		return customerDAOimpl.get(custoermID);
 	}
+	
+	@Override
+	public Customer getBasicInfo(String name) {
+		return customerDAOimpl.get(name);
+	}
+
 
 	@Override
 	public boolean beMember(Customer customer) {
-		customer.setNickname(DESUtils.getEncryptString(customer.getNickname()));
-		customer.setEmail(DESUtils.getEncryptString(customer.getEmail()));
-		customer.setPhone(DESUtils.getEncryptString(customer.getPhone()));
+		encodeCustomer2(customer);
 		MemberDiscount  md = webPromotionDAOImpl.getMemberDiscountByCredit(customer.getCredit());
 		customer.setGrade((byte)md.getLevelID());
 		return customerDAOimpl.update(customer);
 	}
 	
+	public boolean updateMemberLevel(Customer customer){
+		MemberDiscount  md = webPromotionDAOImpl.getMemberDiscountByCredit(customer.getCredit());
+		if(md == null){
+			md = webPromotionDAOImpl.getMemberDiscount(0); //当用户的信用值小于0时，getMemberDiscountByCredit是取不到值的，所以直接赋值为初始级别。
+		}
+		if(customer.getGrade() >= MemberLevelType.VIP1){
+			customer.setGrade((byte)(md.getLevelID()+5));
+		}else{
+			customer.setGrade((byte)md.getLevelID());
+		}
+		return customerDAOimpl.update(customer);
+	}
+	
 	@Override
 	public boolean beVIPMember(Customer customer) {
-		customer.setNickname(DESUtils.getEncryptString(customer.getNickname()));
-		customer.setEmail(DESUtils.getEncryptString(customer.getEmail()));
-		customer.setPhone(DESUtils.getEncryptString(customer.getPhone()));
+		encodeCustomer2(customer);
 		MemberDiscount  md = webPromotionDAOImpl.getMemberDiscountByCredit(customer.getCredit());
 		customer.setGrade((byte)(md.getLevelID()+5));
 		return customerDAOimpl.update(customer);
@@ -83,9 +99,7 @@ public class CustomerServiceImpl implements CustomerService{
 	@Override
 	public boolean modifyCredit(Customer customer, double amount) {
 		customer.setCredit(customer.getCredit() + amount);
-		MemberDiscount  md = webPromotionDAOImpl.getMemberDiscountByCredit(customer.getCredit());
-		customer.setGrade((byte)md.getLevelID());
-		return customerDAOimpl.update(customer);
+		return updateMemberLevel(customer);
 	}
 	
 	/**
@@ -101,9 +115,7 @@ public class CustomerServiceImpl implements CustomerService{
 		customer.setPwd(EncodeUtils.SHA1Encode(target));
 		
 		//对用户名，联系方式，邮箱进行加密（DES）
-		customer.setNickname(DESUtils.getEncryptString(customer.getNickname()));
-		customer.setEmail(DESUtils.getEncryptString(customer.getEmail()));
-		customer.setPhone(DESUtils.getEncryptString(customer.getPhone()));
+		encodeCustomer2(customer);
 	}
 	
 	/**
@@ -114,6 +126,12 @@ public class CustomerServiceImpl implements CustomerService{
 		customer.setNickname(DESUtils.getDecryptString(customer.getNickname()));
 		customer.setEmail(DESUtils.getDecryptString(customer.getEmail()));
 		customer.setPhone(DESUtils.getDecryptString(customer.getPhone()));
+	}
+	
+	public void encodeCustomer2(Customer customer) {
+		customer.setNickname(DESUtils.getEncryptString(customer.getNickname()));
+		customer.setEmail(DESUtils.getEncryptString(customer.getEmail()));
+		customer.setPhone(DESUtils.getEncryptString(customer.getPhone()));
 	}
 	
 
@@ -219,6 +237,7 @@ public class CustomerServiceImpl implements CustomerService{
 	private boolean phoneValidator3(Customer customer) {
 		return !(customerDAOimpl.hasSame(CustomerAttributeType.PHONE,customer.getPhone(),customer.getCustomer_id()));
 	}
+
 
 
 }

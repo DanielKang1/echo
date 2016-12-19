@@ -14,7 +14,6 @@ public class CheckBirthdayInterceptor implements HandlerInterceptor{
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		Customer customer = (Customer)request.getSession().getAttribute("authCustomer");
-		System.out.println("99999999999999999-----------------------------------------------------"+customer);
 		if(customer.getBirthday() == null){
 			boolean beMember = false;
 			request.setAttribute("beMember", beMember);//beMember是用于检测是否是会员。这里由于没有注册日期，提示信息后会重新回到会员页面，则还需要带一次beMember

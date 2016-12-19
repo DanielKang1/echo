@@ -69,10 +69,17 @@ public class WebPromotionDAOImpl implements WebPromotionDAO{
 		}
 		return memberDiscount;
 	}
+	
+	public List<MemberDiscount> getAllMemberDiscount(){
+		String hql = "FROM MemberDiscount";    
+		Query query = getSession().createQuery(hql);
+		List<MemberDiscount> result = query.list();
+		return result;
+	}
 
 	@Override
 	public MemberDiscount getMemberDiscountByCredit(double credit){
-		String hql = "FROM MemberDiscount WHERE creditLimit <= ? ORDER BY creditLimit DESC";   
+		String hql = "FROM MemberDiscount WHERE creditLimit <= ? AND levelID <= 5 ORDER BY creditLimit DESC";   
 		Query query = getSession().createQuery(hql);
 		List<MemberDiscount> result = query.setDouble(0,credit).list();
 		MemberDiscount memberDiscount = null;

@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="com.echo.domain.po.HotelPromotionItem" table="HOTELPROMOTION">
+    <class name="com.echo.domain.po.HotelPromotionItem" table="HOTELPROMOTION" dynamic-update="true" dynamic-insert="true">
         <id name="id" type="int">
             <column name="ID" />
             <generator class="native" />
@@ -24,7 +24,7 @@
             <column name="COOPERATIVE_ENTERPRISE_DISCOUNT" />
         </property>
         <property name="birthdaySwitch" type="boolean">
-            <column name="birthday_discount" />
+            <column name="birthday_switch" />
         </property>
         <property name="bookingDiscountSwitch" type="boolean">
             <column name="booking_measure_switch" />

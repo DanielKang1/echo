@@ -26,10 +26,16 @@ public interface HotelStaffService {
 	 */
 	public HotelStaff getBasicInfo(int staffID);
 
+	public HotelStaff getBasicInfo(String name);
+	
+	public HotelStaff getBasicInfoByHotelID(int staffID);
+	
 	/**
 	 * 更新酒店工作人员的信息
 	 * @param staff
 	 * @return
 	 */
 	public boolean updateStaff(HotelStaff staff);
+
+	
 }

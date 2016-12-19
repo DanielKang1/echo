@@ -38,6 +38,9 @@
 	<!-- 在类中加上@RequestMapping时，有些在JS中的图片地址会找不到，这里是一种解决方法 -->
 	<mvc:resources location="/img/" mapping="/customer/img/**"/>
 	
+	<mvc:resources location="/css/laydate/need/" mapping="/scripts/need/**"/> 
+	<mvc:resources location="/css/laydate/skins/default/" mapping="/scripts/skins/default/**"/>
+	  
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/customer/beMember"/>
@@ -45,7 +48,7 @@
 		</mvc:interceptor>
 	
 	   <mvc:interceptor>
-			<mvc:mapping path="/customer/signout"/>
+			<mvc:mapping path="/*/signout"/>
 			<bean class="com.echo.interceptors.SignoutInterceptor"></bean>
 		</mvc:interceptor>
 		<mvc:interceptor>

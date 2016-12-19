@@ -79,7 +79,7 @@
 		
 		 <!-- 配置事务切点，并把切点和事务属性关联起来 -->
 		<aop:config>
-			<aop:pointcut expression="execution(* com.echo.dao.*.*.*(..))" id="txPointcut"/>
+			<aop:pointcut expression="execution(* com.echo.service.*.*.*(..))" id="txPointcut"/>
 			<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
 		</aop:config>
 		

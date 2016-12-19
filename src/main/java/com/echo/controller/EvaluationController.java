@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,8 +25,13 @@ import com.echo.service.evaluationservice.EvaluationServiceImpl;
 import com.echo.service.hotelservice.HotelServiceImpl;
 import com.echo.service.orderservice.OrderServiceImpl;
 
+/**
+ * 评论 Controller
+ */
 @Controller
 public class EvaluationController {
+	
+	public static final Logger logger = Logger.getLogger(EvaluationController.class);
 	
 	@Autowired
 	public OrderServiceImpl orderServiceImpl;
@@ -36,7 +42,9 @@ public class EvaluationController {
 	@Autowired
 	public EvaluationServiceImpl evaluationServiceImpl;
 	
-	
+	/**
+	 * 查看用户已有评论
+	 */
 	@RequestMapping(value="goViewEvaluations",method=RequestMethod.GET)
 	public String goViewEvaluations(HttpServletRequest request,Map<String,Object> map){
 		Customer customer = (Customer)request.getSession().getAttribute("authCustomer");
@@ -50,6 +58,9 @@ public class EvaluationController {
 		return "customerview/evaluation";
 	}
 	
+	/**
+	 * 前往添加评论
+	 */
 	@RequestMapping(value="eva/{orderID}",method=RequestMethod.GET)
 	public String goAddEvaluations(@PathVariable("orderID") int orderID,Map<String,Object> map){
 		Order order = orderServiceImpl.getOrderByID(orderID);
@@ -61,7 +72,9 @@ public class EvaluationController {
 		return "customerview/addEvaluation";
 	}
 	
-	
+	/**
+	 * 添加评论
+	 */
 	@RequestMapping(value="eva",method=RequestMethod.POST)
 	public String Evaluate(@RequestParam("score") int score,@RequestParam("advantage") String advantage,@RequestParam("orderID") int orderID,RedirectAttributesModelMap map,
 			@RequestParam("disadvantage") String disadvantage,@RequestParam("comment") String comment ,HttpServletRequest request){
@@ -79,8 +92,10 @@ public class EvaluationController {
 		eva.setCustomerName(customer.getNickname());
 		if(evaluationServiceImpl.generateEva(eva)){
 			orderServiceImpl.updateOrderStatus(order, OrderStatusType.EVALUATED);
+			logger.info("添加评论 用户ID："+customer.getCustomer_id()+" 订单ID："+order.getOrderID());
 			map.addFlashAttribute("info", "<script>alert('您的评论已成功添加！');</script>");
 		}else{
+			logger.error("添加评论失败 用户ID："+customer.getCustomer_id()+" 订单ID："+order.getOrderID());
 			map.addFlashAttribute("info", "<script>alert('您的评论添加失败！');</script>");
 		}
 		return "redirect:/customer/goViewOrders";

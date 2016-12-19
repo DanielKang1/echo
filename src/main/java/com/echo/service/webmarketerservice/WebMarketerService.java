@@ -10,7 +10,7 @@ public interface WebMarketerService {
 	 * @param pwd 输入的密码
 	 * @return
 	 */
-	public boolean login(String fieldValue,String pwd);
+	public WebMarketer login(String fieldValue,String pwd);
 	
 	/**
 	 * 添加营销人员
@@ -25,6 +25,8 @@ public interface WebMarketerService {
 	 * @return
 	 */
 	public WebMarketer getBasicInfo(int marketerID);
+	
+	public WebMarketer getBasicInfo(String name);
 	
 	/**
 	 * 更新营销人员信息

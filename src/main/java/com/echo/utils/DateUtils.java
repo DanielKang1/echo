@@ -2,6 +2,7 @@ package com.echo.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtils {
@@ -12,6 +13,44 @@ public class DateUtils {
 		  quot=timeDiff/1000/60/60/24.0;
 		  return (int) Math.ceil(quot);
 	  }
+	 
+	 public static String getCurrentDate(){
+		 SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		 return fmt.format(new Date());
+	 }
+	 
+	 public static Date getDate(String str){
+		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		 Date date = null ;
+		try {
+			date = sdf.parse(str);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		 return date;
+	 }
+	 
+	 public static Date getCorrectiveCheckinDate(Date checkindate){
+	    Calendar calendar = Calendar.getInstance();
+		calendar.setTime(checkindate);
+		calendar.add(Calendar.HOUR, 14);  
+		return calendar.getTime();
+	 }
+	 
+	 public static Date getCorrectiveCheckoutDate(Date checkoutdate){
+	    Calendar calendar = Calendar.getInstance();
+	    calendar.setTime(checkoutdate);
+		calendar.add(Calendar.HOUR, 12);  
+		return calendar.getTime();
+     }
+	 
+	 public static Date getCorrectiveLatestDate(Date checkindate){
+	    Calendar calendar = Calendar.getInstance();
+	    calendar.setTime(checkindate);
+		calendar.add(Calendar.HOUR, -14);
+		calendar.add(Calendar.DAY_OF_MONTH, 1);
+		return  calendar.getTime(); 
+     }
 	 
 	 public static void main(String[] args) {
 		    SimpleDateFormat myFmt2=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

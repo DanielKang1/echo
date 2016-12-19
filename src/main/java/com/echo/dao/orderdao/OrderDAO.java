@@ -93,5 +93,11 @@ public interface OrderDAO {
 	 * @return
 	 */
 	public int getOrdersSizeByType(int hotelID,byte orderType);
+	
+	/**
+	 * 获取当日的异常订单（WebMarketer）
+	 * @return
+	 */
+	public List<Order> getAbnormalOrdersToday();
 
 }

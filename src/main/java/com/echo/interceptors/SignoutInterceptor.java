@@ -12,7 +12,24 @@ public class SignoutInterceptor implements HandlerInterceptor{
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		
-		request.getSession().removeAttribute("authCustomer");
+		String requestUri = request.getRequestURI();                  
+		String contextPath = request.getContextPath();                 
+		String url = requestUri.substring(contextPath.length());
+		String url_ = url.substring(1);
+
+		if(url_.startsWith("hotelstaff")){
+			request.getSession().removeAttribute("authHotelStaff");
+		}
+		if(url_.startsWith("customer")){
+			request.getSession().removeAttribute("authCustomer");
+		}
+		if(url_.startsWith("admin")){
+			request.getSession().removeAttribute("authWebAdmin");
+		}
+		if(url_.startsWith("marketer")){
+			request.getSession().removeAttribute("authWebMarketer");
+		}
+		
 		return true;
 	}
 

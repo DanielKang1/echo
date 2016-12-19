@@ -1,23 +1,84 @@
 package com.echo.dao.webadmindao;
 
 import java.util.List;
-
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import com.echo.domain.po.CusEnterItem;
-import com.echo.domain.po.Enterprise;
 import com.echo.domain.po.WebAdmin;
+import com.echo.utils.DESUtils;
+import com.echo.utils.EncodeUtils;
 
+@Repository
 public class WebAdminDAOImpl implements WebAdminDAO{
-
+	
+	@Autowired
+	private SessionFactory sessionFactory;
+	
+	private Session getSession(){
+		return sessionFactory.getCurrentSession();
+	}
+	
+//	public boolean save(WebAdmin webMarketer) {
+//		int result = (int) getSession().save(webMarketer);
+//		if(result > 0 ){
+//			return true;
+//		}
+//		else{
+//			return false;
+//		}
+//	}
+	
 	@Override
-	public WebAdmin get(int webAdminID, String pwd) {
-		// TODO Auto-generated method stub
-		return null;
+	public WebAdmin get(int adminID) {
+		String hql = "FROM WebAdmin WHERE adminID = ?";   
+		Query query = getSession().createQuery(hql);
+		List<WebAdmin> result = query.setInteger(0,adminID).list();
+		WebAdmin admin = null;
+		if(result.size() > 0 ){
+			admin = result.get(0);
+		}
+		return admin;
 	}
 
 	@Override
-	public boolean add(Enterprise enterprise) {
-		// TODO Auto-generated method stub
-		return false;
+	public WebAdmin get(String name,String pwd) {
+		String pwdsalt = getPwdsalt(name);
+		if(pwdsalt != null){
+			int result = checkPwd(name, pwdsalt, pwd);
+				if(result != 0){
+					return get(result);
+				}
+		}
+		return null;
+	}
+	
+	public String getPwdsalt(String value) {
+		String encodeValue = DESUtils.getEncryptString(value);
+		String sql = "SELECT w1.pwdsalt FROM webadmin w1 WHERE w1.admin_name = ? ";
+		Query query = getSession().createSQLQuery(sql);
+		List<String> result = query.setString(0,encodeValue).list();
+		System.out.println(" "+result);
+		String pwdsalt = null;
+		if(result.size() > 0){
+			 pwdsalt = result.get(0);
+		}
+		return pwdsalt;
+	}
+	
+	public int checkPwd(String value, String salt, String pwd){
+		String encodePwdHash = EncodeUtils.SHA1Encode(salt+pwd);
+		String encodeValue = DESUtils.getEncryptString(value);
+		String sql = "SELECT w1.admin_id FROM webadmin w1 WHERE w1.admin_name = ?  AND w1.pwd = ?";
+		Query query = getSession().createSQLQuery(sql);
+		List<Integer> result = query.setString(0,encodeValue).setString(1,encodePwdHash).list();
+		int admin_id = 0;
+		if(result.size() > 0){
+			admin_id = result.get(0);
+		}
+		return admin_id;
 	}
 
 	@Override
@@ -26,11 +87,6 @@ public class WebAdminDAOImpl implements WebAdminDAO{
 		return false;
 	}
 
-	@Override
-	public boolean update(Enterprise enterprise) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public boolean addRelation(CusEnterItem item) {
@@ -49,5 +105,6 @@ public class WebAdminDAOImpl implements WebAdminDAO{
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 
 }

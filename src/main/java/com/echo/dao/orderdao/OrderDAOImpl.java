@@ -1,6 +1,7 @@
 package com.echo.dao.orderdao;
 
 import java.math.BigInteger;
+import java.util.Calendar;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -55,6 +56,13 @@ public class OrderDAOImpl implements OrderDAO {
 			order = result.get(0);
 		}
 		return order;
+	}
+	
+	public List<Order> getUnexecutedOrders() {
+		String hql = "FROM Order WHERE orderType = 0";   
+		Query query = getSession().createQuery(hql);
+		List<Order> result = query.list();
+		return result;
 	}
 
 	@Override
@@ -127,6 +135,14 @@ public class OrderDAOImpl implements OrderDAO {
 		Query query = getSession().createSQLQuery(sql);
 		Object count = query.setInteger(0,hotelID).setByte(1,orderType).uniqueResult();  //BigInteger
 		return  ((BigInteger)count).intValue();
+	}
+	
+	public List<Order> getAbnormalOrdersToday(){
+		String hql = "FROM Order o WHERE orderType = "+OrderStatusType.ABNORMAL+" AND Date(o.latestDate) = :date";
+		Query query = getSession().createQuery(hql);
+		query.setDate("date", Calendar.getInstance().getTime());
+		List<Order> result = query.list();
+		return result;
 	}
 
 }

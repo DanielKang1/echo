@@ -37,7 +37,7 @@
 								${ requestScope.notSignin }
 							</c:if>
 						    <!-- 登录表单 -->
-							<form:form class="form" method="post" modelAttribute="login" action="${pageContext.request.contextPath }/customer/signin">
+							<form:form class="form" method="post" modelAttribute="login" action="${pageContext.request.contextPath }/admin/signin">
 								<c:if test="${requestScope.orderUrl != null }"> 
 									<input type="hidden" name="orderUrl" value="${ requestScope.orderUrl }">
 								</c:if>

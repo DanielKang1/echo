@@ -18,9 +18,9 @@ public class GenerateOrderInterceptor implements HandlerInterceptor {
 		Customer customer = (Customer)request.getSession().getAttribute("authCustomer");
 		
 //		String url_ = request.getRequestURL().toString();              //		>>>: http://localhost:8080/echo/customer/order/hotel_1&roomType_1
-		String requestUri = request.getRequestURI();                 //		>>>: /echo/customer/order/hotel_1&roomType_1
-		String contextPath = request.getContextPath();              //			>>>: /echo
-		String url = requestUri.substring(contextPath.length());   //			>>>: /customer/order/hotel_1&roomType_1
+		String requestUri = request.getRequestURI();                  //		>>>: /echo/customer/order/hotel_1&roomType_1
+		String contextPath = request.getContextPath();                //		>>>: /echo
+		String url = requestUri.substring(contextPath.length());       //		>>>: /customer/order/hotel_1&roomType_1
 
 		if(customer == null){
 			request.setAttribute("orderUrl", url);

@@ -11,6 +11,10 @@ public interface HotelStaffDAO {
 	 */
 	public HotelStaff get(int staffID);
 
+	public HotelStaff getByHotelID(int hotelID);
+	
+	public HotelStaff get(String name);
+	
 	/**
 	 * 用于酒店工作人员的登录
 	 * @param fieldValue 输入值为Name/Phone/ID中的一种

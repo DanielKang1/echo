@@ -38,6 +38,8 @@ public interface HotelService {
 	 */
 	public Hotel getHotelByID(int hotelID);
 	
+	public Hotel getHotelByName(String name);
+	
 	/**
 	 * 按照HotelSearcher进行搜索，获得符合条件的HotelSearchResult(用于用户在网站上的搜索)
 	 * @param hotelSearcher
