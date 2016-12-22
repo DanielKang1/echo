@@ -4,6 +4,9 @@
 <!-- Generated 2016-11-8 14:02:16 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.echo.domain.po.PromotionDate" table="PROMOTIONDATE">
+    
+    	<cache usage="read-write"/>
+    	
         <id name="id" type="int">
             <column name="ID" />
             <generator class="native" />

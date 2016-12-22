@@ -23,6 +23,9 @@
         <property name="hotelName" type="java.lang.String">
             <column name="HOTEL_NAME" />
         </property>
+        <property name="oldResult" type="double">
+            <column name="old_result" />
+        </property>
         <property name="amount" type="double">
             <column name="AMOUNT" />
         </property>

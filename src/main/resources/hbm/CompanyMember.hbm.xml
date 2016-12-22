@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2016-12-22 21:05:32 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.echo.domain.po.CompanyMember" table="COMPANYMEMBER">
+        <id name="itemID" type="int">
+            <column name="ITEM_ID" />
+            <generator class="native" />
+        </id>
+        <property name="customerID" type="int">
+            <column name="CUSTOMER_ID" />
+        </property>
+        <property name="companyName" type="java.lang.String">
+            <column name="COMPANY_NAME" />
+        </property>
+    </class>
+</hibernate-mapping>

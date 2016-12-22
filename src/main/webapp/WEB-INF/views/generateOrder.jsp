@@ -110,7 +110,7 @@
 	 
     <div class="wrapper">
    		
-		<div class="header header-filter" style="background-image: url('${pageContext.request.contextPath }/img/signin-bg1.jpg');"></div>
+		<div class="header header-filter" style="background-image: url('${pageContext.request.contextPath }/img/barbg.jpg');"></div>
 		
 		<div  class="main main-raised" style="padding: 10px 10px 10px 15px;margin-top: -230px;">
 		
@@ -177,7 +177,7 @@
 										   
 			                		 </td> 
 			                		 </tr>
-			                		 <tr style="border-color: #ffffff"><td width="20%">预计入住数量：</td><td> 
+			                		 <tr style="border-color: #ffffff"><td width="20%">预计入住人数：</td><td> 
 										<div class="input-group spinner asd col-sm-5" data-trigger="spinner" style="margin-top: -30px;margin-bottom: -10px;margin-left: 10px;">
 									          <input type="text" class="form-control" value="1" data-rule="quantity"  data-max="10" data-min="1" data-step="1" name="peopleNum" >
 									          <div class="input-group-addon">

@@ -102,9 +102,13 @@
 							<div class="radio checkbox-inline" style="float: left;"><label><form:radiobutton path="starLevel" value="4"/>四星级</label></div>
 							<div class="radio checkbox-inline" style="float: left;"><label><form:radiobutton path="starLevel" value="5"/>五星级/豪华</label></div>
 			        </div>
+			       
 			        <div class="col-md-2"> 
 				      <button type="submit" class="btn btn-primary" style="float: left;">提交搜索</button>
 				    </div>
+				     <div class="col-md-12 checkbox" style="margin-top: -30px;"> 
+			      		  <label><input name="selectLived" id="selectLived"   type="checkbox"/> 只搜索入住过的酒店 </label>
+			        </div>
 				</form:form>
 
 				<div style="padding-top: 35px;">

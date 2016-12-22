@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.echo.domain.po.CompanyMember;
 import com.echo.domain.po.Customer;
 import com.echo.utils.DESUtils;
 import com.echo.utils.EncodeUtils;
@@ -81,20 +82,14 @@ public class CustomerDAOimpl  implements CustomerDAO{
 
 	@Override
 	public Customer get(int customer_id) {
-		String hql = "FROM Customer WHERE customer_id = ?";   
-		Query query = getSession().createQuery(hql);
-		List<Customer> result = query.setInteger(0,customer_id).list();
-		Customer customer = null;
-		if(result.size() > 0 ){
-			customer = result.get(0);
-		}
-		return customer;
+		return (Customer)getSession().get(Customer.class, customer_id);
 	}
 	
 	@Override
 	public Customer get(String name) {
 		String hql = "FROM Customer WHERE nickname = ?";   
 		Query query = getSession().createQuery(hql);
+		query.setCacheable(true);
 		List<Customer> result = query.setString(0,DESUtils.getEncryptString(name)).list();
 		Customer customer = null;
 		if(result.size() > 0 ){
@@ -171,6 +166,27 @@ public class CustomerDAOimpl  implements CustomerDAO{
 			customer_id = result.get(0);
 		}
 		return customer_id;
+	}
+	
+	public boolean addCompanyMember(CompanyMember companyMember){
+		int result = (int) getSession().save(companyMember);
+		if(result > 0 ){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	
+	public CompanyMember getCompanyMemberByCID(int customerID){
+		String hql = "FROM CompanyMember WHERE customerID = ?";   
+		Query query = getSession().createQuery(hql);
+		List<CompanyMember> result = query.setInteger(0,customerID).list();
+		CompanyMember cm = null;
+		if(result.size() > 0 ){
+			cm = result.get(0);
+		}
+		return cm;
 	}
 	
  

@@ -12,15 +12,20 @@ public class BirthdayPromotionStrategy implements HotelPromotionStrategy{
 	@Override
 	public double getPrice(HotelPriceHandleContext ctx) {
 		HotelPromotionItem  item = ctx.getHotelPromotionItem();
+		double originalPrice = ctx.getHotelPromotionParameters().getOriginalPrice();
+		
 		if(item == null || item.getBirthdaySwitch() == false){
-			return ctx.getOriginalPrice();
+			return  originalPrice;
+		}
+		if(ctx.getHotelPromotionParameters() == null){
+			return  originalPrice;
 		}
 		
-		if(allowable(ctx.getBirthday())){
-			return item.getBirthdayDiscount() * ctx.getOriginalPrice();
+		if(allowable(ctx.getHotelPromotionParameters().getBirthday())){
+			return item.getBirthdayDiscount() * originalPrice;
 		}
 		
-		return ctx.getOriginalPrice();
+		return originalPrice;
 	}
 	
 	//查看date的月与日是否与今天相同

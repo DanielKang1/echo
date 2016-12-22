@@ -8,8 +8,8 @@ import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.echo.dao.evaluationdao.EvaluationDAOImpl;
 import com.echo.domain.po.Evaluation;
-import com.echo.service.evaluationservice.EvaluationServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration(value = "WebContent")
@@ -20,7 +20,7 @@ import com.echo.service.evaluationservice.EvaluationServiceImpl;
 public class EvaluationTest {
 	
 	@Autowired
-	private EvaluationServiceImpl impl;
+	private EvaluationDAOImpl impl;
 	
 	@Test
 	public void testAdd(){
@@ -33,7 +33,13 @@ public class EvaluationTest {
 		evaluation.setDemerit("demerit");
 		evaluation.setComment("comment");
 		evaluation.setRoomTypeName("roomtypeName");
-		impl.generateEva(evaluation);
+		impl.add(evaluation);
+	}
+	
+	@Test
+	public void testQuery(){
+		impl.getByHotelID(1);
+		System.out.println(impl.getByHotelID(1).size());
 	}
 
 }

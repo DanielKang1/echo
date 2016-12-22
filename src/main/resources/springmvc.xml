@@ -43,10 +43,31 @@
 	  
 	<mvc:interceptors>
 		<mvc:interceptor>
+			<mvc:mapping path="/customer/**"/>
+			<mvc:exclude-mapping path="/customer/signin"/>
+			<mvc:exclude-mapping path="/customer/signup"/>
+			<mvc:exclude-mapping path="/customer/order/hotel*"/>
+			<bean class="com.echo.interceptors.AuthIdentificationInterceptor"></bean>
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/admin/**"/>
+			<mvc:exclude-mapping path="/admin/signin"/>
+			<bean class="com.echo.interceptors.AuthIdentificationInterceptor"></bean>
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/hotelstaff/**"/>
+			<mvc:exclude-mapping path="/hotelstaff/signin"/>
+			<bean class="com.echo.interceptors.AuthIdentificationInterceptor"></bean>
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/marketer/**"/>
+			<mvc:exclude-mapping path="/marketer/signin"/>
+			<bean class="com.echo.interceptors.AuthIdentificationInterceptor"></bean>
+		</mvc:interceptor>
+		<mvc:interceptor>
 			<mvc:mapping path="/customer/beMember"/>
 			<bean class="com.echo.interceptors.CheckBirthdayInterceptor"></bean>
 		</mvc:interceptor>
-	
 	   <mvc:interceptor>
 			<mvc:mapping path="/*/signout"/>
 			<bean class="com.echo.interceptors.SignoutInterceptor"></bean>

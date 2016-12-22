@@ -8,17 +8,18 @@ public class CooperativeEnterprisePromotionStrategy implements HotelPromotionStr
 
 	@Override
 	public double getPrice(HotelPriceHandleContext ctx) {
-		
 		HotelPromotionItem  item = ctx.getHotelPromotionItem();
+		double originalPrice = ctx.getHotelPromotionParameters().getOriginalPrice();
+		
 		if(item == null || item.getCooperativeEnterpriseSwitch() == false){
-			return ctx.getOriginalPrice();
+			return originalPrice;
 		}
 		
-		if(ctx.getGrade() == MemberLevelType.COOPERATIVE_ENTERPRISE){
-			
-			return item.getCooperativeEnterpriseDiscount() * ctx.getOriginalPrice();
+		if(ctx.getCompanyMember() != null){
+			return originalPrice * item.getCooperativeEnterpriseDiscount();
 		}
-		return ctx.getOriginalPrice();
+		
+		return originalPrice;
 	}
 
 }

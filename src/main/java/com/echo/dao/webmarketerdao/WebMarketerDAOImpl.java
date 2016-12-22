@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.echo.domain.po.WebAdmin;
 import com.echo.domain.po.WebMarketer;
 import com.echo.utils.DESUtils;
 import com.echo.utils.EncodeUtils;
@@ -25,14 +26,7 @@ public class WebMarketerDAOImpl implements WebMarketerDAO{
 
 	@Override
 	public WebMarketer get(int marketerID) {
-		String hql = "FROM WebMarketer WHERE marketerID = ?";   
-		Query query = getSession().createQuery(hql);
-		List<WebMarketer> result = query.setInteger(0,marketerID).list();
-		WebMarketer marketer = null;
-		if(result.size() > 0 ){
-			marketer = result.get(0);
-		}
-		return marketer;
+		return (WebMarketer)getSession().get(WebMarketer.class, marketerID);
 	}
 	
 	@Override

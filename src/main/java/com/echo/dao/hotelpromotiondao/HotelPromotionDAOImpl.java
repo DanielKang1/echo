@@ -39,6 +39,7 @@ public class HotelPromotionDAOImpl implements HotelPromotionDAO {
 	public List<PromotionDate> getPromotionDateList(int hotelID) {
 		String hql = "FROM PromotionDate WHERE hotelID = ?";   
 		Query query = getSession().createQuery(hql).setInteger(0,hotelID);
+		query.setCacheable(true);
 		List<PromotionDate> result = query.list();
 		return result;
 	}
@@ -71,6 +72,7 @@ public class HotelPromotionDAOImpl implements HotelPromotionDAO {
 	public HotelPromotionItem getHotelPromotionItem(int hotelID) {
 		String hql = "FROM HotelPromotionItem WHERE hotelID = ?";   
 		Query query = getSession().createQuery(hql);
+		query.setCacheable(true);
 		List<HotelPromotionItem> result = query.setInteger(0,hotelID).list();
 		HotelPromotionItem hotelPromotionItem = null;
 		if(result.size() > 0 ){

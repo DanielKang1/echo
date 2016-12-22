@@ -1,6 +1,8 @@
 package com.echo.test;
 
-import static org.junit.Assert.assertTrue;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,14 +13,11 @@ import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.echo.dao.hoteldao.HotelDAOImpl;
 import com.echo.dao.webpromotiondao.WebPromotionDAOImpl;
 import com.echo.domain.po.DistrictDiscount;
-import com.echo.domain.po.Hotel;
 import com.echo.domain.po.MemberDiscount;
-import com.echo.service.hotelservice.HotelServiceImpl;
+import com.echo.service.webpromotionservice.WebPromotionServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration(value = "WebContent")
@@ -107,6 +106,20 @@ public class WebPromotionTest extends AbstractTransactionalJUnit4SpringContextTe
 	@Test
 	public void testGetDistrictDiscount(){
 		System.out.println(webPromotionImpl.getDistrictDiscount(1));
+	}
+	
+	@Autowired
+	private WebPromotionServiceImpl impl;
+	
+	@Test
+	public void testGetAllDistrictDiscount(){
+		Map<String, List<String>> map = impl.getAllDistrictDiscounts();
+		Iterator<String> it = map.keySet().iterator();
+		while(it.hasNext()){
+		Object key = it.next();
+		Object val = map.get(key);
+		System.out.println(key+":"+val);
+		}
 	}
 	
 

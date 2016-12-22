@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 
 import com.echo.dao.customerdao.CustomerDAOimpl;
 import com.echo.dao.webpromotiondao.WebPromotionDAOImpl;
+import com.echo.domain.po.CompanyMember;
 import com.echo.domain.po.Customer;
 import com.echo.domain.po.MemberDiscount;
 import com.echo.domain.type.CustomerAttributeType;
@@ -67,34 +68,30 @@ public class CustomerServiceImpl implements CustomerService{
 	}
 
 
-	@Override
-	public boolean beMember(Customer customer) {
-		encodeCustomer2(customer);
-		MemberDiscount  md = webPromotionDAOImpl.getMemberDiscountByCredit(customer.getCredit());
-		customer.setGrade((byte)md.getLevelID());
-		return customerDAOimpl.update(customer);
-	}
+//	public boolean beMember(Customer customer) {
+//		encodeCustomer2(customer);
+//		MemberDiscount  md = webPromotionDAOImpl.getMemberDiscountByCredit(customer.getCredit());
+//		customer.setGrade((byte)md.getLevelID());
+//		return customerDAOimpl.update(customer);
+//	}
+//	
+//	public boolean beVIPMember(Customer customer) {
+//		encodeCustomer2(customer);
+//		MemberDiscount  md = webPromotionDAOImpl.getMemberDiscountByCredit(customer.getCredit());
+//		customer.setGrade((byte)(md.getLevelID()+5));
+//		return customerDAOimpl.update(customer);
+//	}
 	
 	public boolean updateMemberLevel(Customer customer){
 		MemberDiscount  md = webPromotionDAOImpl.getMemberDiscountByCredit(customer.getCredit());
 		if(md == null){
-			md = webPromotionDAOImpl.getMemberDiscount(0); //当用户的信用值小于0时，getMemberDiscountByCredit是取不到值的，所以直接赋值为初始级别。
+			md = webPromotionDAOImpl.getMemberDiscount(MemberLevelType.Level1); //当用户的信用值小于0时，getMemberDiscountByCredit是取不到值的，所以直接赋值为初始级别。
 		}
-		if(customer.getGrade() >= MemberLevelType.VIP1){
-			customer.setGrade((byte)(md.getLevelID()+5));
-		}else{
-			customer.setGrade((byte)md.getLevelID());
-		}
+		customer.setGrade((byte)md.getLevelID());
 		return customerDAOimpl.update(customer);
 	}
 	
-	@Override
-	public boolean beVIPMember(Customer customer) {
-		encodeCustomer2(customer);
-		MemberDiscount  md = webPromotionDAOImpl.getMemberDiscountByCredit(customer.getCredit());
-		customer.setGrade((byte)(md.getLevelID()+5));
-		return customerDAOimpl.update(customer);
-	}
+	
 
 	@Override
 	public boolean modifyCredit(Customer customer, double amount) {
@@ -237,7 +234,14 @@ public class CustomerServiceImpl implements CustomerService{
 	private boolean phoneValidator3(Customer customer) {
 		return !(customerDAOimpl.hasSame(CustomerAttributeType.PHONE,customer.getPhone(),customer.getCustomer_id()));
 	}
+	
+	
+	public boolean addCompanyMember(CompanyMember companyMember){
+		return customerDAOimpl.addCompanyMember(companyMember);
+	}
 
-
+	public CompanyMember getCompanyMemberByCID(int customerID){
+		return customerDAOimpl.getCompanyMemberByCID(customerID);
+	}
 
 }

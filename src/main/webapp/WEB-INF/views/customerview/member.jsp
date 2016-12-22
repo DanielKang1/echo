@@ -104,7 +104,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">Echo 普通会员</h4>
+                                <h4 class="title">Echo会员</h4>
                             </div>
                             <div class="content">
                             <div style="padding-bottom: 20px;">
@@ -113,55 +113,41 @@
                             		您的信用值为<span style="color: orange;">${sessionScope.authCustomer.credit }</span>，
                             		为<span style="color: red;font-weight: bold;">
 										<c:choose>
-										<c:when test="${sessionScope.authCustomer.grade == 1}">V1</c:when>
-										<c:when test="${sessionScope.authCustomer.grade == 2}">V2</c:when>
-										<c:when test="${sessionScope.authCustomer.grade == 3}">V3</c:when>
-										<c:when test="${sessionScope.authCustomer.grade == 4}">V4</c:when>
-										<c:when test="${sessionScope.authCustomer.grade == 5}">V5</c:when>
-										<c:when test="${sessionScope.authCustomer.grade == 6}">VIP1</c:when>
-										<c:when test="${sessionScope.authCustomer.grade == 7}">VIP2</c:when>
-										<c:when test="${sessionScope.authCustomer.grade == 8}">VIP3</c:when>
-										<c:when test="${sessionScope.authCustomer.grade == 9}">VIP4</c:when>
-										<c:when test="${sessionScope.authCustomer.grade == 10}">VIP5</c:when>
+										<c:when test="${sessionScope.authCustomer.grade == 1}">1级会员</c:when>
+										<c:when test="${sessionScope.authCustomer.grade == 2}">2级会员</c:when>
+										<c:when test="${sessionScope.authCustomer.grade == 3}">3级会员</c:when>
+										<c:when test="${sessionScope.authCustomer.grade == 4}">4级会员</c:when>
+										<c:when test="${sessionScope.authCustomer.grade == 5}">5级会员</c:when>
 										</c:choose>
-									</span>级会员。 
-                            		</c:if>
-                            		<c:if test="${requestScope.beMember == false }">
-                            		您尚未成为普通会员，是否<a href="${pageContext.request.contextPath }/customer/beMember">免费注册</a>。
+									</span>。 
                             		</c:if>
                             		
                             </div>
                             <table class="table">
 				                    <tr>
 				                   		<th class="text-left col-md-2">会员等级：</th>
-				                        <th class="text-left col-md-2">V1级会员</th>
-				                        <th class="text-left col-md-2">V2级会员</th>
-				                        <th class="text-left col-md-2">V3级会员</th>
-				                        <th class="text-left col-md-2">V4级会员</th>
-				                        <th class="text-left col-md-2">V5级会员</th>
+				                   		<c:forEach items="${memberDiscounts}" var="md" >
+				                        	<th class="text-left col-md-2">${md.levelName}</th>
+				                        </c:forEach>
 				                    </tr>
 				                    <tr>
 				                        <th class="text-left col-md-2">所需信用值：</th>
-				                        <td class="text-left col-md-2">100</td>
-				                        <td class="text-left col-md-2">1000</td>
-				                        <td class="text-left col-md-2">3000</td>
-				                        <td class="text-left col-md-2">5000</td>
-				                        <td class="text-left col-md-2">10000</td>
+				                        <c:forEach items="${memberDiscounts}" var="md" >
+				                        	<td class="text-left col-md-2">${md.creditLimit}</td>
+				                        </c:forEach>
 				                    </tr>
 				                    <tr>
 				                        <th class="text-left col-md-2">折扣：</th>
-				                        <td class="text-left col-md-2">100%</td>
-				                        <td class="text-left col-md-2">95%</td>
-				                        <td class="text-left col-md-2">93%</td>
-				                        <td class="text-left col-md-2">90%</td>
-				                        <td class="text-left col-md-2">85%</td>
+				                        <c:forEach items="${memberDiscounts}" var="md" >
+				                        	<td class="text-left col-md-2">${md.discount}</td>
+				                        </c:forEach>
 				                    </tr>
 				              </table>
                             </div>
                         </div>
                     </div>
                  </div>
-                 
+                 <!-- 
                    <div class="row">
                     <div class="col-md-12">
                         <div class="card">
@@ -204,6 +190,8 @@
                     </div>
                  </div>
                  
+                  -->
+                 
                  <div class="row">
                     <div class="col-md-12">
                         <div class="card">
@@ -214,19 +202,34 @@
 				                   		<td class="text-left col-md-2">城市</td>
 				                        <td class="text-left col-md-2">商圈</td>
 				                    </tr>
-				                    <tr>
-				                        <td class="text-left col-md-2"><a href="">南京</a></td>
-				                        <td class="text-left col-md-10"><a href="">夫子庙地区</a>、<a href="">新街口地区（市中心）</a></td>
+				                    <c:forEach items="${allDistrictDiscounts }" var="dd">
+				                     <tr>
+				                        <td class="text-left col-md-2"><a href="${pageContext.request.contextPath }/getHotels/city/${dd.key }">${dd.key }</a></td>
+				                        <td class="text-left col-md-10">
+				                        	<c:forEach items="${dd.value }" var="district">
+				                        		<a href="${pageContext.request.contextPath }/getHotels/district/${district }">${district }</a>&nbsp;&nbsp;&nbsp;
+				                        	</c:forEach>
+				                    	    
+				                        </td>
 				                    </tr>
-				                    <tr>
-				                        <td class="text-left col-md-2"><a href="">北京</a></td>
-				                        <td class="text-left col-md-10"><a href="">西单商业街</a>、<a href="">中关村五道口</a>、<a href="">国贸地区</a>、<a href="">密云风景区</a></td>
-				                    </tr>
-				                    <tr>
-				                        <td class="text-left col-md-2"><a href="">上海</a></td>
-				                        <td class="text-left col-md-10"><a href="">陆家嘴金融贸易区</a>、<a href="">人民广场地区</a>、<a href="">外滩地区</a>、<a href="">虹桥地区</a>、<a href="">静安寺地区</a></td>
-				                    </tr>
+				                    </c:forEach>
 				              </table>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+                 
+                 <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="content">
+                          	 您可进行<a href="">企业会员登记</a>，以享受企业会员优惠。<hr>
+                          	 <form class="form-inline" action="${pageContext.request.contextPath }/customer/coomember" method="POST">
+									  <div class="form-group">
+									    <input type="text" class="form-control" id="cooName" name="cooName" placeholder="企业名称">
+									  </div>
+									  <button type="submit" class="btn btn-info btn-fill">提交</button>
+								 </form>
                             </div>
                         </div>
                     </div>
@@ -290,16 +293,22 @@
 	</div>
 	<!-- 条款弹出框END -->
 	
+	<c:if test="${requestScope.Info != null }">
+             ${requestScope.Info }
+    </c:if>
+	
 	<%--  未记录日期的用户提醒记录 --%>
+	<%--
 	<c:if test="${requestScope.memberInfo != null }">
              ${requestScope.memberInfo }
     </c:if>
-    
+     --%>
     <%-- 提醒未成为普通会员却想成为VIP的，先注册为普通会员。  --%>
+    <%-- 
    	<c:if test="${requestScope.VIPInfo != null }">
             ${requestScope.VIPInfo }
     </c:if>
-
+ 	--%>
 </body>
 
 	<script src="${pageContext.request.contextPath }/scripts/jquery.min.js" type="text/javascript"></script>

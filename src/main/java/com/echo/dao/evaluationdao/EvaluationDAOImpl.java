@@ -51,6 +51,7 @@ public class EvaluationDAOImpl implements EvaluationDAO{
 	public List<Evaluation> getByHotelID(int hotelID) {
 		String hql = "FROM Evaluation WHERE hotelID = ?";   
 		Query query = getSession().createQuery(hql);
+		query.setCacheable(true);
 		List<Evaluation> result = query.setInteger(0,hotelID).list();
 		return result;
 	}

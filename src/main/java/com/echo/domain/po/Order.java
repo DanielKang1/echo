@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class Order implements Serializable{
 	
-	private static final long serialVersionUID = -8891205876322772665L;
+	private static final long serialVersionUID = -1129058439731895386L;
 	
 	private int orderID;     //订单ID
 	private byte orderType;    //订单类型  参照OrderStatusType
@@ -25,7 +25,26 @@ public class Order implements Serializable{
 	//数据库中还需放入一个日期字段存储每次修改的时间（MySQL自动实现），便可记录下订单状态修改的时间
 	
 	
+	public Order(){}
 	
+	public Order(byte orderType, Hotel hotel, int customerID, String reservedName, String reservedPhone,
+			Date creationDate, Date checkinDate, Date checkoutDate, Date latestDate, RoomType roomType, int bookingNum,
+			int peopleNum, byte hasChild) {
+		this.orderType = orderType;
+		this.hotel = hotel;
+		this.customerID = customerID;
+		this.reservedName = reservedName;
+		this.reservedPhone = reservedPhone;
+		this.creationDate = creationDate;
+		this.checkinDate = checkinDate;
+		this.checkoutDate = checkoutDate;
+		this.latestDate = latestDate;
+		this.roomType = roomType;
+		this.bookingNum = bookingNum;
+		this.peopleNum = peopleNum;
+		this.hasChild = hasChild;
+		//单独留出Price
+	}
 	public int getOrderID() {
 		return orderID;
 	}

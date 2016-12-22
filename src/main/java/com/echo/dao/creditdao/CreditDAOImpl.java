@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.echo.dao.basedao.BaseDaoImpl;
 import com.echo.domain.po.CreditChangeItem;
 
 @Repository
@@ -35,7 +36,7 @@ public class CreditDAOImpl implements CreditDAO {
 	public List<CreditChangeItem> getByCID(int customerID) {
 		String hql = "FROM CreditChangeItem WHERE customerID = ?";
 		Query query = getSession().createQuery(hql);
-		List<CreditChangeItem> result = query.setInteger(1, customerID).list();
+		List<CreditChangeItem> result = query.setInteger(0, customerID).list();
 		return result;
 	}
 
@@ -43,7 +44,7 @@ public class CreditDAOImpl implements CreditDAO {
 	public List<CreditChangeItem> getByOID(int orderID) {
 		String hql = "FROM CreditChangeItem WHERE orderID = ?";
 		Query query = getSession().createQuery(hql);
-		List<CreditChangeItem> result = query.setInteger(1, orderID).list();
+		List<CreditChangeItem> result = query.setInteger(0, orderID).list();
 		return result;
 	}
 

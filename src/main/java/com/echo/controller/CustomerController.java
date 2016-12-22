@@ -1,11 +1,6 @@
 package com.echo.controller;
 
 import java.io.PrintWriter;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,18 +20,18 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
 import com.echo.domain.po.Customer;
-import com.echo.domain.po.Hotel;
-import com.echo.domain.po.Order;
-import com.echo.domain.po.RoomType;
-import com.echo.domain.type.OrderStatusType;
+import com.echo.domain.type.MemberLevelType;
 import com.echo.domain.vo.Login;
+import com.echo.service.creditservice.CreditServiceImpl;
 import com.echo.service.customerservice.CustomerServiceImpl;
-import com.echo.service.hotelservice.HotelServiceImpl;
-import com.echo.service.orderservice.OrderServiceImpl;
-import com.echo.service.roomservice.RoomServiceImpl;
-import com.echo.utils.DateUtils;
 import com.echo.utils.EncodeUtils;
 import com.google.code.kaptcha.Constants;
+
+/**
+ * 关于Customer的处理
+ * （对于Customer的会员处理 拆分到了 MemberController中）
+ * （对于Customer的订单处理 拆分到了CustomerOrderController中）
+ */
 
 @SessionAttributes(value={"authCustomer"})
 @RequestMapping("/customer") 
@@ -47,16 +41,9 @@ public class CustomerController {
 	public static final Logger logger = Logger.getLogger(CustomerController.class);
 	
 	@Autowired
-	public CustomerServiceImpl customerServiceImpl;
-	
+	private CustomerServiceImpl customerServiceImpl;
 	@Autowired
-	public HotelServiceImpl hotelServiceImpl;
-	
-	@Autowired
-	public RoomServiceImpl roomServiceImpl;
-	
-	@Autowired
-	public OrderServiceImpl orderServiceImpl;
+	private CreditServiceImpl creditServiceImpl;
 	
 	
 	//---------------------------------------------------------------------登录、注册、注销-----------------------------------------------------------------------
@@ -145,8 +132,8 @@ public class CustomerController {
 		if(!customerServiceImpl.validator(customer, result)){
 			return "signup";
 		}
-		//用户信息加密
-		customerServiceImpl.encodeCustomer(customer);
+		customerServiceImpl.encodeCustomer(customer);  //用户信息加密
+		customer.setGrade(MemberLevelType.Level1);  //初始级别为Level1
 		//用户填写的值都符合要求时，保存用户数据
 		if(customerServiceImpl.register(customer)){
 			logger.info("新注册用户："+tmpUsername);
@@ -186,6 +173,8 @@ public class CustomerController {
 	@RequestMapping(value="/info")
 	public String goPersonalInfo(@ModelAttribute("authCustomer") Customer customer,Map<String,Object> map){
 		map.put("authCustomer", customer); 
+		map.put("creditItems",creditServiceImpl.getCustomerItem(customer.getCustomer_id()));
+		map.put("credit_", customerServiceImpl.getBasicInfo(customer.getCustomer_id()).getCredit());
 		return "customerview/personalInfo";
 	}
 	
@@ -193,15 +182,15 @@ public class CustomerController {
 	 * 修改基础信息
 	 */
 	@RequestMapping(value="/modify",method=RequestMethod.PUT)
-	public String modifyInfo(@ModelAttribute("authCustomer") Customer customer,BindingResult result,Map<String,Object> map){
+	public String modifyInfo(@ModelAttribute("authCustomer") Customer customer,BindingResult result,RedirectAttributesModelMap map){
 		//修改的参数有误
 		if(!customerServiceImpl.validator_modify(customer, result)){
 			//个人信息主页的显示是基于session的，即使修改的属性错的，但也会修过session中的值。所以，先将session恢复原貌。
 			Customer originalCus = customerServiceImpl.getBasicInfo(customer.getCustomer_id());
 			customerServiceImpl.decodeCustomer(originalCus);
-			map.put("authCustomer", originalCus);
-			map.put("modifyError", "<script type='text/javascript'>alert('填入的参数有误，修改失败。') </script>");
-			return "customerview/personalInfo";
+			map.addFlashAttribute("authCustomer", originalCus);
+			map.addFlashAttribute("modifyError", "<script type='text/javascript'>alert('填入的参数有误，修改失败。') </script>");
+			return "redirect:/customer/info";
 		}
 		try {
 			customerServiceImpl.modifyInfo(customer);
@@ -211,7 +200,7 @@ public class CustomerController {
 			e.printStackTrace();
 			logger.error("Customer个人信息修改异常："+e);
 		}
-		map.put("modifySuc", "<script type='text/javascript'>alert('信息修改成功！') </script>");
+		map.addFlashAttribute("modifySuc", "<script type='text/javascript'>alert('信息修改成功！') </script>");
 		return "redirect:/customer/info";
 	}
 	
@@ -262,215 +251,6 @@ public class CustomerController {
 		}else{
 			out.println("false");
 		}
-	}
-	
-	
-	//---------------------------------------------------------------------订单操作-----------------------------------------------------------------------
-
-	/**
-	 * 前往生成订单页
-	 */
-	@RequestMapping(value="/order/hotel_{hotelID}&roomType_{roomTypeID}",method=RequestMethod.GET)
-	public String goGenerateOrder(@PathVariable("hotelID") Integer hotelID,@PathVariable("roomTypeID") Integer roomTypeID,Map<String,Object> map){
-		Hotel hotel = hotelServiceImpl.getHotelByID(hotelID);
-		RoomType roomType = roomServiceImpl.getRoomTypeByTypeID(roomTypeID);
-		map.put("hotel", hotel);
-		map.put("roomType", roomType);
-		return "generateOrder";
-	}	
-	
-	
-	/**
-	 * 检查选择的预订日期段是否还有房间可以预订（AJax）
-	 * @param checkindate  选择的入住时间
-	 * @param checkoutdate  选择的退房时间
-	 * @param bookingNum    选择的预订数量
-	 * @param roomTypeID   房间型号
-	 */
-	@RequestMapping(value="/order/checkAllowBookOrNot")
-	public void checkAllowBookOrNot(@RequestParam(value="checkindate",required=false) String checkindate,@RequestParam(value="checkoutdate",required=false) String checkoutdate,
-			@RequestParam(value="bookingNum",required=false) String bookingNum,@RequestParam(value="roomTypeID",required=false) String roomTypeID,
-			PrintWriter out,HttpSession session){
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date checkin = null;
-		Date checkout = null;
-		try {
-			checkin = sdf.parse(checkindate);
-			checkout = sdf.parse(checkoutdate);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		if(hotelServiceImpl.allowBookingOrNot(checkin, checkout, Integer.parseInt(roomTypeID), Integer.parseInt(bookingNum))){
-			out.print("true");
-		}else{
-			out.println("false");
-		}
-			
-	}
-	
-	
-	/**
-	 * 生成订单操作
-	 * @throws  
-	 */
-	@RequestMapping(value="/order/submitOrder&hotel_{hotelID}&roomType_{roomTypeID}",method=RequestMethod.POST)
-	public String generateOrder(@PathVariable("hotelID") Integer hotelID,@PathVariable("roomTypeID") Integer roomTypeID,
-			@ModelAttribute("authCustomer") Customer customer,RedirectAttributesModelMap map,
-			@RequestParam("checkinDate") String checkinDate,@RequestParam("checkoutDate") String checkoutDate,
-			@RequestParam("bookingNum") Integer bookingNum,@RequestParam("peopleNum") Integer peopleNum,@RequestParam("roomPrice") Double roomPrice,
-			@RequestParam("hasChild") byte hasChild,@RequestParam("captcha") String captcha,
-			@RequestParam("reservedName") String reservedName,@RequestParam("reservedPhone") String reservedPhone) {
-		
-		//获得入住及退房日期
-		Date checkindate = DateUtils.getDate(checkinDate);
-		Date checkoutdate = DateUtils.getDate(checkoutDate);
-		Date latestDate = null;
-		
-		//提交订单前务必先验证住的日子的客房是否已被预订满
-//		System.out.println("-----"+hotelServiceImpl.allowBookingOrNot(checkindate, checkoutdate, roomTypeID, bookingNum));
-		if(!hotelServiceImpl.allowBookingOrNot(checkindate, checkoutdate, roomTypeID, bookingNum)){
-				map.addFlashAttribute("OrderErrorInfo", "<script>alert('预订失败。该类型客房在您选择的时间段内已经被预订满！您可以调整预订数量或入住时间。');</script>");
-				return "redirect:/customer/order/hotel_"+hotelID+"&roomType_"+roomTypeID;
-		}
-		
-		//将用户输入的日期转化成真正的入住/退房/最迟日期 （惯例：宾馆的入住时间为14：00，离店时间为正午12：00）
-		DateUtils.getCorrectiveCheckinDate(checkindate);   //入住时间
-		DateUtils.getCorrectiveCheckoutDate(checkoutdate); //退房时间
-		DateUtils.getCorrectiveLatestDate(checkindate);   //最晚入住时间（入住那天的24点）
-		
-		Order order = new Order();
-		order.setOrderType(OrderStatusType.UNEXECUTED);
-		order.setHotel(hotelServiceImpl.getHotelByID(hotelID));
-		order.setCustomerID(customer.getCustomer_id());
-		order.setReservedName(reservedName);
-		order.setReservedPhone(reservedPhone);
-		order.setCreationDate(new Date());
-		order.setCheckinDate(checkindate);
-		order.setCheckoutDate(checkoutdate);
-		order.setLatestDate(latestDate);
-		order.setRoomType(roomServiceImpl.getRoomTypeByTypeID(roomTypeID));
-		order.setBookingNum(bookingNum);
-		order.setPeopleNum(peopleNum);
-		order.setHasChild(hasChild);
-		order.setTotal(DateUtils.getDaysDiff(checkoutdate, checkindate)*roomPrice*bookingNum);
-		if(orderServiceImpl.generateOrder(order)){
-			logger.info("新添加订单  用户ID："+order.getCustomerID()+" 酒店ID："+order.getHotel().getHotelID()+" 预留手机号："+order.getReservedPhone() );
-			//使用RedirectAttributesModelMap可以在redirect时放Attribute，可防止重复提交。
-			map.addFlashAttribute("orderInfo", "<script>alert('您已成功预订！到店支付房费"+order.getTotal()+"！');</script>");
-			return "redirect:/all";
-		}else{
-			logger.error("订单生成异常  用户ID："+order.getCustomerID()+" 酒店ID："+order.getHotel().getHotelID());
-			map.addFlashAttribute("orderInfo", "<script>alert('预订失败...请重新尝试...');</script>");
-			return "redirect:/all";
-		}
-	}
-	
-	
-	/**
-	 * 前往个人订单管理页
-	 */
-	@RequestMapping(value="goViewOrders",method=RequestMethod.GET)
-	public String goViewOrders(@ModelAttribute("authCustomer") Customer customer,Map<String,Object> map){
-		List<Order> cusOrders = orderServiceImpl.getCustomerOrders(customer.getCustomer_id());
-		map.put("orders", cusOrders);
-		Map<Hotel,Integer> staResult = orderServiceImpl.getOrderTimesByHotel(customer.getCustomer_id()); //订购次数的统计结果
-		map.put("staResult", staResult);
-		return "customerview/order";
-	}
-	
-	/**
-	 * 个人订单页的分类操作
-	 */
-	@RequestMapping(value="viewOrdersByType/{typeID}",method=RequestMethod.GET)
-	public String viewOrdersByType(@ModelAttribute("authCustomer") Customer customer,Map<String,Object> map,@PathVariable("typeID") byte typeID){
-		List<Order> ordersByType = orderServiceImpl.getCustomerOrdersByType(customer.getCustomer_id(), typeID);
-		map.put("ordersByType", ordersByType);
-		return "forward:/customer/goViewOrders";
-	}
-	
-	/**
-	 * 取消订单
-	 */
-	@RequestMapping(value="cancelorder/{orderID}",method=RequestMethod.GET)
-	public String cancelOrder(@PathVariable("orderID") int orderID,Map<String,Object> map){
-		Order order = orderServiceImpl.getOrderByID(orderID);
-		if(orderServiceImpl.updateOrderStatus(order, OrderStatusType.CANCELLED)){
-			logger.info("取消订单  订单号："+order.getOrderID()+" 用户ID："+order.getCustomerID() );
-			map.put("Info","<script type='text/javascript'>alert('取消订单成功！') </script>" );
-		}else{
-			logger.error("取消订单失败  订单号："+order.getOrderID()+" 用户ID："+order.getCustomerID() );
-			map.put("Info","<script type='text/javascript'>alert('取消订单失败.') </script>" );
-		}
-		return "forward:/customer/goViewOrders";
-	}
-	
-	/**
-	 * 查看订单详情
-	 */
-	@RequestMapping(value="order/detail/{orderID}",method=RequestMethod.GET)
-	public String viewDetail(@PathVariable("orderID") int orderID,Map<String,Object> map){
-		Order order = orderServiceImpl.getOrderByID(orderID);
-		map.put("orderInfo", order);
-		return "customerview/orderDetail";
-	}
-	
-	
-	//---------------------------------------------------------------------会员-----------------------------------------------------------------------
-	
-	/**
-	 * 前往会员处理页
-	 */
-	@RequestMapping(value="goMemberHandle",method=RequestMethod.GET)
-	public String goMemberHandle(@ModelAttribute("authCustomer") Customer customer,Map<String,Object> map){
-		if(customer.getGrade() == 0){
-			boolean beMember = false;
-			map.put("beMember", beMember);
-		}
-		
-		return "customerview/member";
-	}
-	
-	
-	/**
-	 * 成为一般会员
-	 */
-	@RequestMapping(value="beMember",method=RequestMethod.GET)
-	public String beMember(@ModelAttribute("authCustomer") Customer customer,Map<String,Object> map){
-		try {
-			customerServiceImpl.beMember(customer);
-			customerServiceImpl.decodeCustomer(customer);
-			logger.info("用户"+customer.getCustomer_id()+" "+customer.getNickname()+"成为一般会员");
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("成为一般会员失败 ："+customer.getCustomer_id()+" "+customer.getNickname()+" "+e);
-		}
-		return "customerview/member";
-	}
-	
-	/**
-	 * 成为VIP会员
-	 */
-	@RequestMapping(value="beVIPMember",method=RequestMethod.GET)
-	public String beVIPMember(@ModelAttribute("authCustomer") Customer customer,Map<String,Object> map){
-		if(customer.getGrade() == 0){
-			map.put("beMember", false);
-			map.put("VIPInfo", "<script>alert('请您先成为普通会员')</script>");
-			return "customerview/member";
-		}
-		if(customer.getGrade() > 5){
-			map.put("VIPInfo", "<script>alert('您已经是VIP会员了')</script>");
-			return "customerview/member";
-		}
-		try {
-			customerServiceImpl.beVIPMember(customer);
-			customerServiceImpl.decodeCustomer(customer);
-			logger.info("用户"+customer.getCustomer_id()+" "+customer.getNickname()+"成为VIP会员");
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("成为VIP会员失败 ："+customer.getCustomer_id()+" "+customer.getNickname()+" "+e);
-		}
-		return "pay";
 	}
 	
 }

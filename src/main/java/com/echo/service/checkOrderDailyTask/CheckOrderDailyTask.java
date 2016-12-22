@@ -1,4 +1,4 @@
-package com.echo.service.checkOrderDailyTask;
+package com.echo.service.checkorderdailytask;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +15,9 @@ import com.echo.service.creditservice.CreditServiceImpl;
 import com.echo.service.customerservice.CustomerServiceImpl;
 import com.echo.service.orderservice.OrderServiceImpl;
 
+/**
+ * 该Service专门负责每天0点对订单的检查（是否成为了异常订单）
+ */
 @Service
 public class CheckOrderDailyTask {
 	
@@ -47,10 +50,11 @@ public class CheckOrderDailyTask {
 	private void abnormalOrderHandle(Order order) {
 		//订单设置为异常
 		orderServiceImpl.updateOrderStatus(order, OrderStatusType.ABNORMAL);
+		double oldCredit = customerServiceImpl.getBasicInfo(order.getCustomerID()).getCredit() + (-1) * order.getTotal();
 		
 		//扣除用户信用值(1.添加Credit记录)
 		CreditChangeItem creditChangeItem = new CreditChangeItem(order.getCustomerID(), order.getOrderID(), CreditOperationType.ORDER_ABNORMAL,
-				order.getHotel().getHotelID(), order.getHotel().getHotelName(), -order.getTotal());
+				order.getHotel().getHotelID(), order.getHotel().getHotelName(),oldCredit, -order.getTotal());
 		creditServiceImpl.generateItem(creditChangeItem);
 		
 		//扣除用户信用值(2.更改用户属性)

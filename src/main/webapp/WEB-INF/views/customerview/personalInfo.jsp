@@ -147,7 +147,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>等级</label>
-                                                <input type="text" class="form-control" disabled placeholder="Username" value="<c:choose><c:when test="${sessionScope.authCustomer.grade ==0}">未成为会员</c:when><c:when test="${sessionScope.authCustomer.grade ==1}">普通会员1级</c:when><c:when test="${sessionScope.authCustomer.grade ==2}">普通会员2级</c:when><c:when test="${sessionScope.authCustomer.grade ==3}">普通会员3级</c:when><c:when test="${sessionScope.authCustomer.grade ==4}">普通会员4级</c:when><c:when test="${sessionScope.authCustomer.grade ==5}">普通会员5级</c:when><c:when test="${sessionScope.authCustomer.grade ==6}">VIP会员1级</c:when><c:when test="${sessionScope.authCustomer.grade ==7}">VIP会员2级</c:when><c:when test="${sessionScope.authCustomer.grade ==8}">VIP会员3级</c:when><c:when test="${sessionScope.authCustomer.grade ==9}">VIP会员4级</c:when><c:when test="${sessionScope.authCustomer.grade ==10}">VIP会员5级</c:when><c:when test="${sessionScope.authCustomer.grade ==88}">合作企业会员</c:when></c:choose>">
+                                                <input type="text" class="form-control" disabled placeholder="Username" value="<c:choose><c:when test="${sessionScope.authCustomer.grade ==1}">1级会员</c:when><c:when test="${sessionScope.authCustomer.grade ==2}">2级会员</c:when><c:when test="${sessionScope.authCustomer.grade ==3}">3级会员</c:when><c:when test="${sessionScope.authCustomer.grade ==4}">4级会员</c:when><c:when test="${sessionScope.authCustomer.grade ==5}">5级会员</c:when></c:choose>">
                                             </div>        
                                         </div>
                                         <div class="col-md-4">
@@ -159,19 +159,6 @@
                                         </div>
                                     </div> 
                                 </form>
-                                
-	                            <c:if test="${ requestScope.modifyError!= null }">
-	                             ${modifyError }
-	                            </c:if>
-	                            <c:if test="${ requestScope.modifyPwdError!= null }">
-	                             ${modifyPwdError }
-	                            </c:if>
-	                            <c:if test="${ requestScope.modifySuc!= null }">
-	                             ${modifySuc }
-	                            </c:if>
-	                            <c:if test="${ requestScope.modifyPwdSuc!= null }">
-	                             ${modifyPwdSuc }
-	                            </c:if>
                                 
                             </div>
                         </div>
@@ -188,7 +175,9 @@
                            				 <p class="category">此表单将显示您每一次的信用变化情况</p>
                                       </div>
                                       <div class="col-md-8">
+                                      <!-- 
                                           <button  data-toggle="modal" data-target="#myModal" class="btn btn-warning btn-fill pull-right"><i class="fa fa-money"></i>&nbsp;&nbsp;信用充值</button> 
+                                      -->
                                       </div>
                                  </div>
                        </div>
@@ -201,66 +190,48 @@
 				                        <th class="text-left col-md-2">订单ID</th>
 				                        <th class="text-left col-md-2">酒店名称</th>
 				                        <th class="text-left col-md-2">操作类型</th>
-				                        <th class="text-left col-md-2">增减数值</th>
+				                        <th class="text-left col-md-1">信用值变化</th>
+				                        <th class="text-left col-md-1">信用值结果</th>
 				                        <th class="text-left col-md-2">相关日期</th>
 				                        <th class="text-center col-md-1"></th>
 				                    </tr>
 				                </thead>
 				                <tbody>
+				                <c:forEach items="${creditItems }" var="item">
 				                    <tr>
-				                        <td class="text-center col-md-1">1</td>
-				                        <td class="text-left col-md-2">010042341</td>
-				                        <td class="text-left col-md-2">南京金陵饭店</td>
-				                        <td class="text-left col-md-2">订单执行</td>
-				                        <td class="text-left col-md-2"><span style="color: green;">+868</span></td>
-				                        <td class="text-left col-md-2">2016/10/1</td>
+				                        <td class="text-center col-md-1">${item.itemID }</td>
+				                        <td class="text-left col-md-2">${item.orderID }</td>
+				                        <td class="text-left col-md-2">${item.hotelName }</td>
+				                        <td class="text-left col-md-2">
+					                        <c:choose>
+					                        	<c:when test="${item.operationType == 1 }">订单执行</c:when>
+					                        	<c:when test="${item.operationType == 2 }">订单异常</c:when>
+					                        	<c:when test="${item.operationType == 3 }">异常订单撤销</c:when>
+					                        	<c:when test="${item.operationType == 4 }">信用充值</c:when>
+					                        	<c:when test="${item.operationType == 5 }">执行撤销过晚</c:when>
+					                        	<c:when test="${item.operationType == 6 }">异常订单执行</c:when>
+					                        </c:choose>
+				                        </td>
+				                        <td class="text-left col-md-1">
+					                        <c:if test="${item.amount > 0 }"><span style="color: green;">+${item.amount }</span></c:if>
+					                        <c:if test="${item.amount < 0 }"><span style="color: red;">${item.amount }</span></c:if>
+				                        </td>
+				                        <td class="text-left col-md-1"> ${item.oldResult } </td>
+				                        <td class="text-left col-md-2"><fmt:formatDate  pattern="yyyy-MM-dd HH:mm:ss" value="${item.changeDate }" /></td>
 				                        <td class="td-actions text-center col-md-1">
-				                            <button type="button" rel="tooltip" title="查看酒店信息" class="btn btn-info btn-simple btn-xs">
+				                            <a href="${pageContext.request.contextPath }/hotel_${item.hotelID}" type="button" rel="tooltip" title="查看酒店信息" class="btn btn-info btn-simple btn-xs">
 				                                <i class="fa fa-building"></i>
-				                            </button>
-				                            <button type="button" rel="tooltip" title="查看订单信息" class="btn btn-success btn-simple btn-xs">
+				                            </a>
+				                            <a href="${pageContext.request.contextPath }/customer/order/detail/${item.orderID}" type="button" rel="tooltip" title="查看订单信息" class="btn btn-success btn-simple btn-xs">
 				                                <i class="fa fa-file"></i>
-				                            </button> 
+				                            </a> 
 				                        </td>
 				                    </tr>
+				               </c:forEach>
 				                    <tr>
-				                        <td class="text-center col-md-1">2</td>
-				                        <td class="text-left col-md-2">010044611</td>
-				                        <td class="text-left col-md-2">南京玄武饭店</td>
-				                        <td class="text-left col-md-2">订单异常</td>
-				                        <td class="text-left col-md-2"><span style="color: red;">-325</span></td>
-				                        <td class="text-left col-md-2">2016/10/8</td>
-				                        <td class="td-actions text-center col-md-1">
-				                           <button type="button" rel="tooltip" title="查看酒店信息" class="btn btn-info btn-simple btn-xs">
-				                                <i class="fa fa-building"></i>
-				                            </button>
-				                            <button type="button" rel="tooltip" title="查看订单信息" class="btn btn-success btn-simple btn-xs">
-				                                <i class="fa fa-file"></i>
-				                            </button> 
+				                        <td class="col-md-12 text-right" colspan="8">
+				                       		 <span style="font-size: 16px;">当前总计：${credit_ }</span>
 				                        </td>
-				                    </tr>
-				                    <tr>
-				                        <td class="text-center col-md-1">3</td>
-				                        <td class="text-left col-md-2">010047271</td>
-				                        <td class="text-left col-md-2">南京汤山御庭精品酒店</td>
-				                        <td class="text-left col-md-2">订单执行</td>
-				                        <td class="text-left col-md-2"><span style="color: green;">+525</span></td>
-				                        <td class="text-left col-md-2">2016/10/15</td>
-				                        <td class="td-actions text-center col-md-1">
-				                            <button type="button" rel="tooltip" title="查看酒店信息" class="btn btn-info btn-simple btn-xs">
-				                                <i class="fa fa-building"></i>
-				                            </button>
-				                            <button type="button" rel="tooltip" title="查看订单信息" class="btn btn-success btn-simple btn-xs">
-				                                <i class="fa fa-file"></i>
-				                            </button> 
-				                        </td>
-				                    </tr>
-				                    <tr>
-				                       
-			                        <td class="col-md-12 text-right" colspan="7">
-			                       		 <span style="font-size: 16px;">总计：1323</span>
-			                        </td>
-				                        
 				                    </tr>
 				                </tbody>
 				            </table>
@@ -280,9 +251,8 @@
      
  
 
-
-	<!-- 信息修改弹出框 -->
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<!-- 信息修改弹出框 -->
+	<div class="modal fade" id="myModal"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header">
@@ -338,7 +308,7 @@
                                      <div class="col-md-6">
                                          <div class="form-group">
                                              <label  style="float: left;">生日</label>
-                                             <form:input path="birthday" type="text" class="form-control form_date"/><form:errors path="birthday" cssClass="error"></form:errors> 
+                                             <form:input path="birthday" type="text" class="form-control"/><form:errors path="birthday" cssClass="error"></form:errors> 
                                          </div>        
                                      </div>
                                  </div>
@@ -395,12 +365,25 @@
 	    </div>
 	  </div>
 	</div>
+	
 	<!-- 信息修改弹出框END -->
 	
 	<c:if test="${requestScope.creditDeficiency != null }">
 		${requestScope.creditDeficiency}
 	</c:if>
 	
+ <c:if test="${ requestScope.modifyError!= null }">
+   ${modifyError }
+  </c:if>
+  <c:if test="${ requestScope.modifyPwdError!= null }">
+   ${modifyPwdError }
+  </c:if>
+  <c:if test="${ requestScope.modifySuc!= null }">
+   ${modifySuc }
+  </c:if>
+  <c:if test="${ requestScope.modifyPwdSuc!= null }">
+   ${modifyPwdSuc }
+  </c:if>
 
 </body>
 

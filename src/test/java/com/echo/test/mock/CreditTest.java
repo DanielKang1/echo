@@ -39,10 +39,10 @@ public class CreditTest {
 	 */
 	@Test
 	public void testAddAndGetCreditItem(){
-		CreditChangeItem creditChangeItem1 = new CreditChangeItem(10010, 10024210, CreditOperationType.ORDER_ABNORMAL, 1, "南京金陵饭店", -344);
-		CreditChangeItem creditChangeItem2 = new CreditChangeItem(10010, 10024210, CreditOperationType.ABNORMAL_CANCELLED, 1, "南京金陵饭店", +344);
-		CreditChangeItem creditChangeItem3 = new CreditChangeItem(10010, 10024210, CreditOperationType.ORDER_EXECUTED, 1, "南京金陵饭店", 688);
-		CreditChangeItem creditChangeItem4 = new CreditChangeItem(10010, 0, CreditOperationType.RECHARGE, 0, "", 1000);
+		CreditChangeItem creditChangeItem1 = new CreditChangeItem(10010, 10024210, CreditOperationType.ORDER_ABNORMAL, 1, "南京金陵饭店", 1000,-344);
+		CreditChangeItem creditChangeItem2 = new CreditChangeItem(10010, 10024210, CreditOperationType.ABNORMAL_CANCELLED, 1, "南京金陵饭店", 1000, +344);
+		CreditChangeItem creditChangeItem3 = new CreditChangeItem(10010, 10024210, CreditOperationType.ORDER_EXECUTED, 1, "南京金陵饭店", 1000, 688);
+		CreditChangeItem creditChangeItem4 = new CreditChangeItem(10010, 0, CreditOperationType.RECHARGE, 0, "", 1000, 1000);
 		List<CreditChangeItem> items1 = new ArrayList<>();
 		items1.add(creditChangeItem1);
 		items1.add(creditChangeItem2);

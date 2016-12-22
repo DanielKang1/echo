@@ -10,14 +10,13 @@ import com.echo.domain.po.PromotionDate;
 
 public class SpecificDatePromotionStrategy implements HotelPromotionStrategy{
 	
-	@Autowired
-	private HotelPromotionServiceImpl hotelPromotionServiceImpl;
-
 	@Override
 	public double getPrice(HotelPriceHandleContext ctx)  {
-		List<PromotionDate> dates = hotelPromotionServiceImpl.getHotelPromotionDateList(ctx.getHotelID());
+		
+		double originalPrice = ctx.getHotelPromotionParameters().getOriginalPrice();
+		List<PromotionDate> dates = ctx.getPromotionDates();
 		if(dates == null){
-			return ctx.getOriginalPrice();
+			return originalPrice;
 		}
 		
 		Date current = new Date();
@@ -34,7 +33,7 @@ public class SpecificDatePromotionStrategy implements HotelPromotionStrategy{
 			}
 		}
 		
-		return ctx.getOriginalPrice() * discount;
+		return originalPrice * discount;
 	}
 	
 	

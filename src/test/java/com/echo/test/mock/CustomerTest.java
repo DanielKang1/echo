@@ -77,38 +77,38 @@ public class CustomerTest {
     /**
      * 测试成为会员
      */
-    @Test
-    public void testBeMember(){
-    	MemberDiscount md = new MemberDiscount();
-    	md.setLevelID(2);
-    	when(mockWebPromotionDAOImpl.getMemberDiscountByCredit(234)).thenReturn(md);
-    	when(mockCustomerDAOimpl.update(mockCustomer)).thenReturn(true);
-    	
-    	assertTrue(mockCustomerServiceImpl.beMember(mockCustomer));
-    	System.out.println("-------------beMember-------------");
-    	System.out.println(mockCustomer.getGrade()); 
-    	
-    	verify(mockWebPromotionDAOImpl,times(1)).getMemberDiscountByCredit(any(double.class));
-    	verify(mockCustomerDAOimpl,times(1)).update(any(Customer.class));
-    }
+//    @Test
+//    public void testBeMember(){
+//    	MemberDiscount md = new MemberDiscount();
+//    	md.setLevelID(2);
+//    	when(mockWebPromotionDAOImpl.getMemberDiscountByCredit(234)).thenReturn(md);
+//    	when(mockCustomerDAOimpl.update(mockCustomer)).thenReturn(true);
+//    	
+//    	assertTrue(mockCustomerServiceImpl.beMember(mockCustomer));
+//    	System.out.println("-------------beMember-------------");
+//    	System.out.println(mockCustomer.getGrade()); 
+//    	
+//    	verify(mockWebPromotionDAOImpl,times(1)).getMemberDiscountByCredit(any(double.class));
+//    	verify(mockCustomerDAOimpl,times(1)).update(any(Customer.class));
+//    }
     
     /**
      * 测试成为VIP会员
      */
-    @Test
-    public void testBeVIPMember(){
-    	MemberDiscount md = new MemberDiscount();
-    	md.setLevelID(2);
-    	when(mockWebPromotionDAOImpl.getMemberDiscountByCredit(234)).thenReturn(md);
-    	when(mockCustomerDAOimpl.update(mockCustomer)).thenReturn(true);
-    	
-    	assertTrue(mockCustomerServiceImpl.beVIPMember(mockCustomer));
-    	System.out.println("-------------beVIPMember-------------");
-    	System.out.println(mockCustomer.getGrade());
-    	
-    	verify(mockWebPromotionDAOImpl,times(1)).getMemberDiscountByCredit(any(double.class));
-    	verify(mockCustomerDAOimpl,times(1)).update(any(Customer.class));
-    }
+//    @Test
+//    public void testBeVIPMember(){
+//    	MemberDiscount md = new MemberDiscount();
+//    	md.setLevelID(2);
+//    	when(mockWebPromotionDAOImpl.getMemberDiscountByCredit(234)).thenReturn(md);
+//    	when(mockCustomerDAOimpl.update(mockCustomer)).thenReturn(true);
+//    	
+//    	assertTrue(mockCustomerServiceImpl.beVIPMember(mockCustomer));
+//    	System.out.println("-------------beVIPMember-------------");
+//    	System.out.println(mockCustomer.getGrade());
+//    	
+//    	verify(mockWebPromotionDAOImpl,times(1)).getMemberDiscountByCredit(any(double.class));
+//    	verify(mockCustomerDAOimpl,times(1)).update(any(Customer.class));
+//    }
     
     /**
      * 测试在对信用值进行修改时，重新获得用户的信息

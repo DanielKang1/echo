@@ -48,14 +48,7 @@ public class OrderDAOImpl implements OrderDAO {
 
 	@Override
 	public Order get(int orderID) {
-		String hql = "FROM Order WHERE orderID = ?";   
-		Query query = getSession().createQuery(hql);
-		List<Order> result = query.setInteger(0,orderID).list();
-		Order order = null;
-		if(result.size() > 0 ){
-			order = result.get(0);
-		}
-		return order;
+		return (Order)getSession().get(Order.class,orderID);
 	}
 	
 	public List<Order> getUnexecutedOrders() {
@@ -75,7 +68,7 @@ public class OrderDAOImpl implements OrderDAO {
 
 	@Override
 	public List<Order> getOrdersByCIDAndHID(int customerID, int hotelID) {
-		String hql = "FROM Order WHERE customerID = ? AND hotelID = ?";   
+		String hql = "FROM Order WHERE customerID = ? AND hotel.hotelID = ?";   
 		Query query = getSession().createQuery(hql);
 		List<Order> result = query.setInteger(0,customerID).setInteger(1,hotelID).list();
 		return result;
@@ -110,6 +103,8 @@ public class OrderDAOImpl implements OrderDAO {
 		String hql = "FROM Order WHERE hotel.hotelID = ? AND reservedPhone = ? AND orderType = ?";   
 		Query query = getSession().createQuery(hql);
 		List<Order> result = query.setInteger(0,hotelID).setString(1,phone).setByte(2, OrderStatusType.UNEXECUTED).list();
+		List<Order> result2 = query.setInteger(0,hotelID).setString(1,phone).setByte(2, OrderStatusType.ABNORMAL).list();
+		result.addAll(result2);
 		return result;
 	}
 

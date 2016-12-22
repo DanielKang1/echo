@@ -25,14 +25,7 @@ public class HotelStaffDAOImpl implements HotelStaffDAO {
 	
 	@Override
 	public HotelStaff get(int staffID) {
-		String hql = "FROM HotelStaff WHERE staffID = ?";   
-		Query query = getSession().createQuery(hql);
-		List<HotelStaff> result = query.setInteger(0,staffID).list();
-		HotelStaff staff = null;
-		if(result.size() > 0 ){
-			staff = result.get(0);
-		}
-		return staff;
+		return (HotelStaff)getSession().get(HotelStaff.class, staffID);
 	}
 	
 	@Override

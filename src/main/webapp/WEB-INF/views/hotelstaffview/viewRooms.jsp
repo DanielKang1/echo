@@ -271,7 +271,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myModalLabel">添加客房</h4>
+        <h4 class="modal-title" id="myModalLabel">添加客房类型</h4>
       </div>
       <div class="modal-body">
 			  <form action="${pageContext.request.contextPath }/hotelstaff/roomType/" method="post">
@@ -315,7 +315,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myModalLabel">添加客房2</h4>
+        <h4 class="modal-title" id="myModalLabel">添加客房</h4>
       </div>
       <div class="modal-body">
 			  <form action="${pageContext.request.contextPath }/hotelstaff/room/" method="post">

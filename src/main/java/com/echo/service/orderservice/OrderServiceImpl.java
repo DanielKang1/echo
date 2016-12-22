@@ -3,10 +3,8 @@ package com.echo.service.orderservice;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.echo.dao.orderdao.OrderDAOImpl;
 import com.echo.domain.po.Hotel;
 import com.echo.domain.po.Order;
@@ -122,6 +120,5 @@ public class OrderServiceImpl implements OrderService {
 		return orderDAOImpl.getAbnormalOrdersToday();
 	}
 	
-
 
 }

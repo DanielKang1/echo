@@ -12,7 +12,7 @@ public class HotelSearchResult implements Serializable{
 	
 	private Hotel hotel;      //酒店信息
 	private double rating;    //总评分
-	private int EvalutionNum;  //评论人数
+	private int evalutionNum;  //评论人数
 	private double minPrice;   //该酒店最低价格
 	private List<RoomSearchResult> roomInfo; //符合类型的房间信息
 	
@@ -29,10 +29,10 @@ public class HotelSearchResult implements Serializable{
 		this.rating = rating;
 	}
 	public int getEvalutionNum() {
-		return EvalutionNum;
+		return evalutionNum;
 	}
 	public void setEvalutionNum(int evalutionNum) {
-		EvalutionNum = evalutionNum;
+		this.evalutionNum = evalutionNum;
 	}
 	public double getMinPrice() {
 		return minPrice;
@@ -48,7 +48,7 @@ public class HotelSearchResult implements Serializable{
 	}
 	@Override
 	public String toString() {
-		return "HotelSearchResult [hotel=" + hotel + ", rating=" + rating + ", EvalutionNum=" + EvalutionNum
+		return "HotelSearchResult [hotel=" + hotel.getHotelName() + ", rating=" + rating + ", evalutionNum=" + evalutionNum
 				+ ", minPrice=" + minPrice + ", roomInfo=" + roomInfo + "]";
 	}
 	

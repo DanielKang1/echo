@@ -206,7 +206,7 @@
 								</li>
 								<li>
 									<a href="#messages" data-toggle="tab">
-										<i style="font-style: normal;">密码修改</i>
+										<i style="font-style: normal;">星级修改</i>
 									</a>
 								</li>
 							</ul>

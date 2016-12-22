@@ -67,19 +67,26 @@ public class HotelDAOImpl implements HotelDAO{
 
 	@Override
 	public Hotel get(int hotelID) {
-		String hql = "FROM Hotel WHERE hotelID = ?";   
-		Query query = getSession().createQuery(hql);
-		List<Hotel> result = query.setInteger(0,hotelID).list();
-		Hotel hotel = null;
-		if(result.size() > 0 ){
-			hotel = result.get(0);
-		}
-		return hotel;
+		return (Hotel)getSession().get(Hotel.class, hotelID);
 	}
 
 	@Override
 	public List<Object[]> getRoomTypeAndNum(int hotelID) {
 		return null;
+	}
+	
+	public List<Hotel> getHotelsByCity(String cityName){
+		String hql = "FROM Hotel WHERE city = ?";   
+		Query query = getSession().createQuery(hql);
+		List<Hotel> result = query.setString(0,cityName).list();
+		return result;
+	}
+	
+	public List<Hotel> getHotelsByDistrict(String district){
+		String hql = "FROM Hotel WHERE district = ?";   
+		Query query = getSession().createQuery(hql);
+		List<Hotel> result = query.setString(0,district).list();
+		return result;
 	}
 
 	@Override
@@ -91,6 +98,7 @@ public class HotelDAOImpl implements HotelDAO{
 			hql = "FROM Hotel WHERE city LIKE ? AND district LIKE ?  "
 					+ "AND starLevel = ? AND ( briefIntro LIKE ? OR facility LIKE ? OR hotelName LIKE ? )";   
 			Query query = getSession().createQuery(hql);
+			query.setCacheable(true);
 			result = query.setString(0,"%"+city+"%")
 					.setString(1, "%"+district+"%")
 					.setByte(2, starLevel)
@@ -101,6 +109,7 @@ public class HotelDAOImpl implements HotelDAO{
 		}else{
 			 hql = "FROM Hotel WHERE city LIKE ? AND district LIKE ? AND ( briefIntro LIKE ? OR facility LIKE ? OR hotelName LIKE ? )"; 
 			 Query query = getSession().createQuery(hql);
+			 query.setCacheable(true);
 				result = query.setString(0,"%"+city+"%")
 						.setString(1, "%"+district+"%")
 						.setString(2, "%"+keyWord+"%")
@@ -116,6 +125,7 @@ public class HotelDAOImpl implements HotelDAO{
 	public List<District> getDistricts(String city){
 		String hql = "FROM District WHERE city_name = ?";   
 		Query query = getSession().createQuery(hql);
+		query.setCacheable(true);
 		List<District> result = query.setString(0,city).list();
 		return result;
 	}

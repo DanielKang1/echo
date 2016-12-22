@@ -47,14 +47,23 @@ public class DateUtils {
 	 public static Date getCorrectiveLatestDate(Date checkindate){
 	    Calendar calendar = Calendar.getInstance();
 	    calendar.setTime(checkindate);
-		calendar.add(Calendar.HOUR, -14);
 		calendar.add(Calendar.DAY_OF_MONTH, 1);
 		return  calendar.getTime(); 
      }
 	 
+	 public static boolean apartOver6hours(Date latestDate){
+		 long nd = 1000 * 60 * 60;
+		 long diff = (latestDate.getTime() - new Date().getTime());
+		 if((diff / nd) <= 6){
+			 return true;
+		 }
+		 return false;
+	 }
+	 
+	 
 	 public static void main(String[] args) {
 		    SimpleDateFormat myFmt2=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String checkin  = "2016-11-01 14:00:00";
+			String checkin  = "2016-12-19 21:00:00";
 			String checkout  = "2016-11-02 12:00:00";
 			Date checkindate = null;
 			Date checkoutdate = null;
@@ -65,6 +74,7 @@ public class DateUtils {
 				e.printStackTrace();
 			}
 			System.out.println(getDaysDiff(checkoutdate, checkindate));
+			
 	}
 
 }

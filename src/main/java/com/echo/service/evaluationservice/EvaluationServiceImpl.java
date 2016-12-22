@@ -33,5 +33,21 @@ public class EvaluationServiceImpl implements EvaluationService{
 	public List<Evaluation> getCusEva(int customerID) {
 		return evaluationDAOImpl.getByCusID(customerID);
 	}
+	
+	//获得该酒店平均得分
+	public double getAverageRating(int hotelID){
+		double sum = 0;
+		List<Evaluation> evas = getHotelEva(hotelID);
+		if(evas.size() == 0){
+			return 0;
+		}
+		else{
+			for(Evaluation eva : evas){
+				sum += eva.getMark();
+			}
+			String res = String.format("%.1f",sum / evas.size());
+			return Double.parseDouble(res);
+		}
+	}
 
 }

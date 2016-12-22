@@ -4,6 +4,9 @@
 
 <hibernate-mapping>
     <class name="com.echo.domain.po.RoomType" table="ROOMTYPE" dynamic-update="true" dynamic-insert="true">
+    
+    	<cache usage="read-write"/>
+    
         <id name="typeID" type="int">
             <column name="TYPE_ID" />
             <generator class="native" />

@@ -1,84 +1,32 @@
 package com.echo.service.hotelpromotionservice;
 
-import java.util.Date;
-
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import com.echo.domain.po.CompanyMember;
 import com.echo.domain.po.HotelPromotionItem;
+import com.echo.domain.po.PromotionDate;
+import com.echo.service.customerservice.CustomerServiceImpl;
 
+@Component
 public class HotelPriceHandleContext {
 	
 	@Autowired
 	private HotelPromotionServiceImpl hotelPromotionServiceImpl;
 	
-	private int hotelID; //酒店ID
-	private double originalPrice;  //原先价格
-	private Date birthday;  //生日
-	private int bookingNum;  //预订数量
-	private byte grade;   //用户等级
+	@Autowired
+	private CustomerServiceImpl customerServiceImpl;
+	
+	private HotelPromotionParameters hotelPromotionParameters;
+ 
 	private HotelPromotionItem  hotelPromotionItem; 
 	
-	public HotelPriceHandleContext(int hotelID, double originalPrice, Date birthday, int bookingNum, byte grade) {
-		this.hotelID = hotelID;
-		this.originalPrice = originalPrice;
-		this.birthday = birthday;
-		this.bookingNum = bookingNum;
-		this.grade = grade;
-		this.hotelPromotionItem = hotelPromotionServiceImpl.getHotelPromotionItem(hotelID);
-	}
+	private List<PromotionDate> promotionDates;
 	
-	public int getHotelID() {
-		return hotelID;
-	}
-
-	public void setHotelID(int hotelID) {
-		this.hotelID = hotelID;
-	}
-
-
-	public double getOriginalPrice() {
-		return originalPrice;
-	}
-
-
-	public void setOriginalPrice(double originalPrice) {
-		this.originalPrice = originalPrice;
-	}
-
-	public Date getBirthday() {
-		return birthday;
-	}
-
-	public void setBirthday(Date birthday) {
-		this.birthday = birthday;
-	}
-
-	public int getBookingNum() {
-		return bookingNum;
-	}
-
-	public void setBookingNum(int bookingNum) {
-		this.bookingNum = bookingNum;
-	}
-
-	public byte getGrade() {
-		return grade;
-	}
-
-	public void setGrade(byte grade) {
-		this.grade = grade;
-	}
+	private CompanyMember companyMember;
 	
-	public HotelPromotionItem getHotelPromotionItem() {
-		return hotelPromotionItem;
-	}
-
-	public void setHotelPromotionItem(HotelPromotionItem hotelPromotionItem) {
-		this.hotelPromotionItem = hotelPromotionItem;
-	}
- 
-
-
+	
 
 	/**
 	 * 使用策略模式
@@ -86,16 +34,25 @@ public class HotelPriceHandleContext {
 	 * 暂且使用4种策略的最小值。
 	 */
 	public double getResult(){
+		hotelPromotionItem = hotelPromotionServiceImpl.getHotelPromotionItem(hotelPromotionParameters.getHotelID());	
+		promotionDates = hotelPromotionServiceImpl.getHotelPromotionDateList(hotelPromotionParameters.getHotelID());
 		
 		HotelPromotionStrategy  birthdayStrategy = new BirthdayPromotionStrategy();
 		double p1 = birthdayStrategy.getPrice(this);
+		System.out.println("BirthdayPromotionStrategy:"+p1);
+		
 		HotelPromotionStrategy  bookingNumStrategy = new BookingNumPromotionStrategy();
 		double p2 = bookingNumStrategy.getPrice(this);
+		System.out.println("BookingNumPromotionStrategy:"+p2);
+		
 		HotelPromotionStrategy  cooperativeEnterpriseStrategy = new CooperativeEnterprisePromotionStrategy();
+		companyMember = customerServiceImpl.getCompanyMemberByCID(hotelPromotionParameters.getCustomerID());
 		double p3 = cooperativeEnterpriseStrategy.getPrice(this);
+		System.out.println("CooperativeEnterprisePromotionStrategy:"+p3);
+		
 		HotelPromotionStrategy  specificDateStrategy = new SpecificDatePromotionStrategy();
 		double p4 = specificDateStrategy.getPrice(this);
-		
+		System.out.println("SpecificDatePromotionStrategy:"+p4);
 		double min = (p1 > p2) ? p2 : p1;
 		min = (min > p3 ) ? p3 : min;
 		min = (min > p4 ) ? p4 : min;
@@ -103,6 +60,30 @@ public class HotelPriceHandleContext {
 		return min;
 	}
 	
-	
 
+	public HotelPromotionParameters getHotelPromotionParameters() {
+		return hotelPromotionParameters;
+	}
+
+
+
+	public void setHotelPromotionParameters(HotelPromotionParameters hotelPromotionParameters) {
+		this.hotelPromotionParameters = hotelPromotionParameters;
+	}
+
+
+	public HotelPromotionItem getHotelPromotionItem() {
+		return hotelPromotionItem;
+	}
+
+
+	public List<PromotionDate> getPromotionDates() {
+		return promotionDates;
+	}
+
+
+	public CompanyMember getCompanyMember() {
+		return companyMember;
+	}
+	
 }

@@ -3,6 +3,9 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class name="com.echo.domain.po.Customer" table="CUSTOMER" dynamic-update="true" dynamic-insert="true">
+    
+    	<cache usage="read-write"/>
+    
         <id name="customer_id" type="int">
             <column name="CUSTOMER_ID" />
             <generator class="native" />

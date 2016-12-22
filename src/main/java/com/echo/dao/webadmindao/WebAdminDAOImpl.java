@@ -33,14 +33,7 @@ public class WebAdminDAOImpl implements WebAdminDAO{
 	
 	@Override
 	public WebAdmin get(int adminID) {
-		String hql = "FROM WebAdmin WHERE adminID = ?";   
-		Query query = getSession().createQuery(hql);
-		List<WebAdmin> result = query.setInteger(0,adminID).list();
-		WebAdmin admin = null;
-		if(result.size() > 0 ){
-			admin = result.get(0);
-		}
-		return admin;
+		return (WebAdmin)getSession().get(WebAdmin.class, adminID);
 	}
 
 	@Override

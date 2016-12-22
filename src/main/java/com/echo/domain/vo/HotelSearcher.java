@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 public class HotelSearcher implements Serializable{
 	
-	private static final long serialVersionUID = -1138332297639543783L;
+	private static final long serialVersionUID = 5880019495796864441L;
+	
 	private String city;   //城市
 	private String district; //商圈
 	private byte starLevel;  //星级
@@ -59,6 +60,14 @@ public class HotelSearcher implements Serializable{
 	public void setPriceFloor(double priceFloor) {
 		this.priceFloor = priceFloor;
 	}
+
+	@Override
+	public String toString() {
+		return "HotelSearcher [city=" + city + ", district=" + district + ", starLevel=" + starLevel + ", keyWord="
+				+ keyWord + ", priceFloor=" + priceFloor + ", priceCeiling=" + priceCeiling + "]";
+	}
+	
+	
 
 	
 

@@ -63,14 +63,7 @@ public class RoomDAOImpl implements RoomDAO{
 	
 	@Override
 	public Room get(int id) {
-		String hql = "FROM Room WHERE id = ?";   
-		Query query = getSession().createQuery(hql);
-		List<Room> result = query.setInteger(0,id).list();
-		Room room = null;
-		if(result.size() > 0 ){
-			room = result.get(0);
-		}
-		return room;
+		return (Room)getSession().get(Room.class, id);
 	}
 	
 
@@ -100,6 +93,7 @@ public class RoomDAOImpl implements RoomDAO{
 	public List<Room> getAll(int hotelID) {
 		String hql = "FROM Room WHERE hotelID = ?";   
 		Query query = getSession().createQuery(hql);
+		query.setCacheable(true);
 		List<Room> result = query.setInteger(0,hotelID).list();
 		return result;
 	}
@@ -125,6 +119,13 @@ public class RoomDAOImpl implements RoomDAO{
 		String sql = "SELECT type_id ,type_name, price , count(*) FROM room WHERE hotel_id = ? AND price >= ? AND price <= ? GROUP BY type_id";   
 		Query query = getSession().createSQLQuery(sql);
 		List<Object[]> result = query.setInteger(0,hotelID).setDouble(1,floor).setDouble(2,ceiling).list();
+		return result;
+	}
+	
+	public List<Object[]> getRoomsByPrice(int hotelID, double floor) {
+		String sql = "SELECT type_id ,type_name, price , count(*) FROM room WHERE hotel_id = ? AND price >= ? GROUP BY type_id";   
+		Query query = getSession().createSQLQuery(sql);
+		List<Object[]> result = query.setInteger(0,hotelID).setDouble(1,floor).list();
 		return result;
 	}
 	
@@ -220,6 +221,7 @@ public class RoomDAOImpl implements RoomDAO{
 	public List<RoomType> getAllType(int hotelID) {
 		String hql = "FROM RoomType WHERE hotelID = ?";   
 		Query query = getSession().createQuery(hql);
+		query.setCacheable(true);
 		List<RoomType> result = query.setInteger(0,hotelID).list();
 		return result;
 	}
@@ -241,8 +243,17 @@ public class RoomDAOImpl implements RoomDAO{
 		String sql = "SELECT min(price) FROM roomtype WHERE hotel_id = ?" ;   
 		Query query = getSession().createSQLQuery(sql);
 		List<BigDecimal> result = query.setInteger(0,hotelID).list();
-		System.out.println("-----------------"+hotelID );
-		return result.get(0).doubleValue();
+		if(result != null && result.size() != 0){
+			if (result.get(0) != null){
+				return result.get(0).doubleValue();
+			}else{
+				return 0;
+			}
+			
+		}else{
+			return 0;
+		}
+		
 	}
 	
 	/*

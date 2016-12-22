@@ -15,6 +15,16 @@
     	<property name="hibernate.hbm2ddl.auto">update</property>
     	<property name="hibernate.c3p0.privilegeSpawnedThreads">true</property>
 		<property name="hibernate.c3p0.contextClassLoaderSource">library</property>
-    
+		
+		
+		<!-- 配置二级缓存 -->
+		<property name="hibernate.cache.use_second_level_cache">true</property>
+    	<property name="hibernate.cache.region.factory_class"> org.hibernate.cache.ehcache.EhCacheRegionFactory</property>
+    	<!-- 启用查询缓存(依赖于二级缓存)：查询的域对象hbm文件上还是需要加上 cache usage="read-write"的 -->
+    	<!-- 此外 不要在原生SQL上加上 query.setCacheable(true); -->
+		<property name="hibernate.cache.use_query_cache">true</property>
+    	
+    	
+    	
     </session-factory>
 </hibernate-configuration>

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%> 
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
 
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -17,6 +18,7 @@
     <link href="${pageContext.request.contextPath }/css/material-kit.css" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath }/css/demo.css" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath }/css/bootstrap-datetimepicker.min.css" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath }/css/font-awesome.min.css" rel="stylesheet"/>
     
 </head>
 
@@ -144,6 +146,69 @@
 						  </div>
 			   	  </div>
 			   	  <!-- 酒店详情END -->
+			   	  <!-- 历史预订信息 --> 
+			   	  <c:if test="${orders!= null && fn:length(orders) > 0}">
+					  <div class="panel panel-primary" >
+					      <div class="panel-heading"  >
+					        <h3 class="panel-title">历史预订信息</h3>
+					      </div>
+					      <div class="panel-body">
+							   <table class="table">
+					                <thead>
+					                    <tr>
+					                        <th class="text-left">订单ID</th>
+					                        <th class="text-left">订单状态</th>
+					                        <th class="text-left">酒店名称</th>
+					                        <th class="text-left">下单日期</th>
+					                        <th class="text-left">总金额</th>
+					                    </tr>
+					                </thead>
+					                <tbody>
+					                    <c:forEach items="${orders }" var="order">
+						                    <tr>
+						                        <td class="text-left">${order.orderID }</td>
+						                        <td class="text-left">
+							                        <c:choose>
+														<c:when test="${order.orderType == 0}"><span style="color: #1DC7EA">未执行订单</span></c:when>
+														<c:when test="${order.orderType == 1}"><span style="color: #87CB16">已执行订单</span></c:when>
+														<c:when test="${order.orderType == 2}"><span style="color: #999999">已撤销订单</span></c:when>
+														<c:when test="${order.orderType == 3}"><span style="color: #999999">异常订单</span></c:when>
+														<c:when test="${order.orderType == 4}"><span style="color: #87CB16">已评价订单</span></c:when>
+													</c:choose>	
+						                        </td>
+						                        <td class="text-left">${order.hotel.hotelName }  </td>
+						                        <td class="text-left"><fmt:formatDate  pattern="yyyy-MM-dd HH:mm:ss" value="${order.creationDate }" /></td>
+						                        <td class="text-left">&yen;${order.total }</td>
+						                        <td class="text-right">
+						                        <c:if test="${order.orderType == 0}">
+						                            <a type="button" rel="tooltip" title="撤销订单" class="btn btn-danger btn-simple btn-xs" 
+						                            href="${pageContext.request.contextPath }/customer/cancelorder/${order.orderID}" 
+						                            onclick="if(confirm('确认撤销?')==false) return false;">
+						                                <i class="fa fa-times"></i>
+						                            </a>
+						                        </c:if>   
+						                        <c:if test="${order.orderType == 1}">
+						                            <a  rel="tooltip"  href="${pageContext.request.contextPath }/eva/${order.orderID }"  title="添加评论" class="btn btn-success btn-simple btn-xs">
+					                                	<i class="fa fa-edit"></i>
+					                            	</a>
+						                        </c:if>  
+						                        <c:if test="${order.orderType == 3}">
+							                        <button type="button" rel="tooltip" title="申诉" class="btn btn-warning btn-simple btn-xs" onclick="alert('请联系管理人员，进行线下处理。')">
+						                                <i class="fa fa-bullhorn"></i>
+						                            </button> 
+						                        </c:if> 
+						                            <a  rel="tooltip" title="查看详情" href="${pageContext.request.contextPath }/customer/order/detail/${order.orderID}" class="btn btn-info btn-simple btn-xs">
+						                                <i class="fa fa-external-link"></i>
+						                            </a>
+						                        </td>
+						                    </tr>
+					                    </c:forEach>
+					                </tbody>
+		            			</table>
+						  </div>
+			   	  </div>
+			   	  </c:if>
+			   	  <!-- 历史预订信息END -->
 			   	  <!-- 评论信息 -->
 					  <div class="panel panel-primary" >
 					      <div class="panel-heading">
@@ -264,7 +329,7 @@
 							    
 							    <div class="media">
 						    	  <a class="media-left" href="#">
-						        	<img class="media-object img-rounded" style="margin-top: 5px;width: 70px;height: 70px;" src="${pageContext.request.contextPath }/img/hotel/hotel3.jpg" >
+						         	<img class="media-object img-rounded" style="margin-top: 5px;width: 70px;height: 70px;" src="${pageContext.request.contextPath }/img/hotel/hotel3.jpg" >
 						          </a>
 							      <div class="media-body">
 							        <p class="media-heading">南京玄武饭店</p> 

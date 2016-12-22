@@ -102,13 +102,28 @@
 			        <div class="col-md-2"> 
 				      <button type="submit" class="btn btn-primary" style="float: left;">提交搜索</button>
 				    </div>
+				     <div class="col-md-12 checkbox" style="margin-top: -30px;"> 
+			      		  <label><input name="selectLived" id="selectLived"   type="checkbox"/> 只搜索入住过的酒店 </label>
+			        </div>
 				</form:form>
 				
 			<div class="row">
 				 <div class="col-md-8"  style="padding-top: 15px;">
 					  <div class="panel panel-default" >
 					      <div class="panel-heading">
-					        <h3 class="panel-title">搜索结果</h3>
+					      <div class="row">
+					      	<div class="col-md-2"> 
+					      	 <h3 class="panel-title">搜索结果 </h3>
+					      	</div>
+					      	<div class="col-md-6"> 
+						      	 <a href="${pageContext.request.contextPath }/sort/price1/?city=${hotelSearcher_CS.city}&district=${hotelSearcher_CS.district}&starLevel=${hotelSearcher_CS.keyWord}&keyWord=${hotelSearcher_CS.keyWord}&priceFloor=${hotelSearcher_CS.priceFloor}&priceCeiling=${hotelSearcher_CS.priceCeiling}&selectLived=${selectLived}" class="btn-info btn-sm" title="价格由高到低排序">价格↓</a>
+						      	 <a href="${pageContext.request.contextPath }/sort/price2/?city=${hotelSearcher_CS.city}&district=${hotelSearcher_CS.district}&starLevel=${hotelSearcher_CS.keyWord}&keyWord=${hotelSearcher_CS.keyWord}&priceFloor=${hotelSearcher_CS.priceFloor}&priceCeiling=${hotelSearcher_CS.priceCeiling}&selectLived=${selectLived}" class="btn-info btn-sm" title="价格由低到高排序">价格↑</a>
+						      	 <a href="${pageContext.request.contextPath }/sort/starLevel/?city=${hotelSearcher_CS.city}&district=${hotelSearcher_CS.district}&starLevel=${hotelSearcher_CS.keyWord}&keyWord=${hotelSearcher_CS.keyWord}&priceFloor=${hotelSearcher_CS.priceFloor}&priceCeiling=${hotelSearcher_CS.priceCeiling}&selectLived=${selectLived}" class="btn-info btn-sm" title="按星级由高到低排序">星级排序</a>
+						      	 <a href="${pageContext.request.contextPath }/sort/rating/?city=${hotelSearcher_CS.city}&district=${hotelSearcher_CS.district}&starLevel=${hotelSearcher_CS.keyWord}&keyWord=${hotelSearcher_CS.keyWord}&priceFloor=${hotelSearcher_CS.priceFloor}&priceCeiling=${hotelSearcher_CS.priceCeiling}&selectLived=${selectLived}" class="btn-info btn-sm" title="按评分由高到低排序">评分排序</a>
+					      	</div>
+					      </div>
+					       
+					       
 					      </div>
 					      <!-- 搜索结果 -->
 					      <div class="panel-body">
@@ -122,12 +137,20 @@
 							      </a>
 							      <div class="media-body">
 							        <h4 class="media-heading"><a target="_blank" href="${pageContext.request.contextPath }/hotel_${hotelSearchResult.hotel.hotelID}"><span>${hotelSearchResult.hotel.hotelName}</span></a> </h4> 
-							        <div style="float: right;"><span style="font-size: 28px;color: orange;font-weight: bold;">&yen;${hotelSearchResult.minPrice}</span><span style="color: #999999;font-size: 10px;">起</span></div>
+							        <div style="float: right;">
+							        	<c:if test="${hotelSearchResult.minPrice == 0}">
+							        	<span style="color: #999999;font-size: 10px;">未知</span></div>
+							        	</c:if>
+							        	<c:if test="${hotelSearchResult.minPrice != 0}">
+							        	<span style="font-size: 28px;color: orange;font-weight: bold;">&yen;${hotelSearchResult.minPrice}</span>
+							        	<span style="color: #999999;font-size: 10px;">起</span></div>
+							        	</c:if>
+							        	
 							        <div class="media-content">
-						                <a href="" class="res"><span style="color: #1597B8">${hotelSearchResult.hotel.city} </span></a>  ：
-						                <a href="" class="res"><span style="color: #1597B8">${hotelSearchResult.hotel.district}</span></a>    
+						                <a href="${pageContext.request.contextPath }/getHotels/city/${hotelSearchResult.hotel.city}" class="res"><span style="color: #1597B8">${hotelSearchResult.hotel.city} </span></a>  ：
+						                <a href="${pageContext.request.contextPath }/getHotels/district/${hotelSearchResult.hotel.district}" class="res"><span style="color: #1597B8">${hotelSearchResult.hotel.district}</span></a>    
 						                <span>${hotelSearchResult.hotel.address}</span>
-						                <p>总评分：4.9  &nbsp;&nbsp;&nbsp;<a href="" class="res"><span style="color: #1597B8">源自1234位住客的点评。</span></a></p>
+						                <p>总评分：${hotelSearchResult.rating} &nbsp;&nbsp;&nbsp;<a href="" class="res"><span style="color: #1597B8">源自${hotelSearchResult.evalutionNum}位住客的点评。</span></a></p>
 						                <p>
 						                	<span style="font-weight: bold;">简介</span>：${hotelSearchResult.hotel.briefIntro}
 						                </p>
@@ -177,7 +200,9 @@
 							      </a>
 							      <div class="media-body">
 							        <p class="media-heading">南京古南都饭店</p> 
-							        <div style="float: right;margin-top: -25px;"><span style="font-size: 20px;color: orange;">&yen;886</span><span style="color: #999999;font-size: 10px;">起</span></div>
+							        <div style="float: right;margin-top: -25px;">
+							        	<span style="font-size: 20px;color: orange;">&yen;886</span><span style="color: #999999;font-size: 10px;">起</span>
+							        </div>
 							        <div class="media-content">
 						                <a href="" class="res"><span style="color: #1597B8">南京</span></a>  ：
 						                <a href="" class="res"><span style="color: #1597B8"> 玄武湖湖南路地区</span></a>    

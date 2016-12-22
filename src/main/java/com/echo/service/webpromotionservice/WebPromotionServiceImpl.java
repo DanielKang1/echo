@@ -1,6 +1,9 @@
 package com.echo.service.webpromotionservice;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,6 +72,23 @@ public class WebPromotionServiceImpl implements WebPromotionService{
 	public DistrictDiscount getDistrictDiscountByID(int ID) {
 		return webPromotionDAOImpl.getDistrictDiscount(ID);
 	}
+	
+	public Map<String,List<String>> getAllDistrictDiscounts(){
+		Map<String,List<String>> result = new HashMap<>();
+		List<DistrictDiscount> allDistrictDiscounts = getAllDistrictDiscount();
+		for( DistrictDiscount dd : allDistrictDiscounts){
+			if(result.containsKey(dd.getCityName())){
+				List<String> districts = result.get(dd.getCityName());
+				districts.add(dd.getDistrictName());
+			}
+			else{
+				ArrayList<String> ditrictList = new ArrayList<>();
+				ditrictList.add(dd.getDistrictName());
+				result.put(dd.getCityName(),ditrictList);
+			}
+		}
+		return result;
+	}
 
 	@Override
 	public List<PromotionDate> getWebPromotionDateList() {
@@ -89,7 +109,7 @@ public class WebPromotionServiceImpl implements WebPromotionService{
 	public boolean addDatePromotionItem(PromotionDate promotionDate) {
 		return webPromotionDAOImpl.addPromotionDates(promotionDate);
 	}
-
+	
 	
 
 }

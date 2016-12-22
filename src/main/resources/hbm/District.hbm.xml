@@ -4,6 +4,9 @@
 
 <hibernate-mapping>
     <class name="com.echo.domain.po.District" table="DISTRICT"  dynamic-update="true" dynamic-insert="true">
+    	
+    	<cache usage="read-write"/>
+    
         <id name="id" type="int">
             <column name="ID" />
             <generator class="native" />

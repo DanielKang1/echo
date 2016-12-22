@@ -40,13 +40,5 @@ public interface CustomerService {
 	
 	public Customer getBasicInfo(String name);
 	
-	/**
-	 * 普通用户注册为普通会员
-	 * @param customerID
-	 * @return
-	 */
-	public boolean beMember(Customer customer);
-	
-	public boolean beVIPMember(Customer customer);
 	
 }

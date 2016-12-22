@@ -146,7 +146,7 @@
 								            <td class="text-center">${roomcheck.userID }</td>
 								            <td class="text-center">${roomcheck.orderID }</td>
 								            <td class="text-center">${roomcheck.roomNumber }</td>
-								            <td class="text-center"><fmt:formatDate  pattern="yyyy-MM-dd" value="${roomcheck.checkInDate }" /></td>
+								            <td class="text-center"><fmt:formatDate  pattern="yyyy-MM-dd HH:mm:ss" value="${roomcheck.checkInDate }" /></td>
 								            <td class="td-actions text-right">
 								                <a  class="btn btn-info btn-simple btn-xs" href="${pageContext.request.contextPath }/hotelstaff/getOrderInfo/${roomcheck.orderID }">
 								                    <i class="fa fa-bars"></i>
@@ -192,7 +192,9 @@
 								</c:choose>	
 								</td>	
 								<td class="a1" width="10%">入住时间：</td><td class="a2" width="15%" style="color: #CC9900">
-								<fmt:formatDate  pattern="yyyy-MM-dd" value="${orderInfo.checkinDate }" /></td>
+								<fmt:formatDate  pattern="yyyy-MM-dd HH:mm:ss" value="${orderInfo.checkinDate }" /></td>
+								<td class="a1" width="10%">退房时间：</td><td class="a2" width="15%" style="color: #CC9900">
+								<fmt:formatDate  pattern="yyyy-MM-dd HH:mm:ss" value="${orderInfo.checkoutDate }" /></td>
 								</tr>
 							</table>
 							 </div>  

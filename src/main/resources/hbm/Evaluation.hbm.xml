@@ -4,6 +4,9 @@
 <!-- Generated 2016-12-8 13:37:07 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.echo.domain.po.Evaluation" table="EVALUATION">
+    
+    	<cache usage="read-write"/>
+    
         <id name="evaluationID" type="int">
             <column name="EVALUATION_ID" />
             <generator class="native" />
