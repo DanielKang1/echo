@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class Evaluation implements Serializable{
 	
-	private static final long serialVersionUID = 8031488957831289769L;
+	private static final long serialVersionUID = -205793667572520872L;
 	
 	private int evaluationID;      //评论ID
 	private int customerID;       //客户ID
@@ -18,7 +18,20 @@ public class Evaluation implements Serializable{
 	private String comment;        //评论内容
 	private Date releaseTime;       //发布时间
 	
+	public Evaluation(){}
  
+	public Evaluation(int customerID, String customerName, int hotelID, String roomTypeName, double mark, String merit,
+			String demerit, String comment, Date releaseTime) {
+		this.customerID = customerID;
+		this.customerName = customerName;
+		this.hotelID = hotelID;
+		RoomTypeName = roomTypeName;
+		this.mark = mark;
+		this.merit = merit;
+		this.demerit = demerit;
+		this.comment = comment;
+		this.releaseTime = releaseTime;
+	}
 	public int getEvaluationID() {
 		return evaluationID;
 	}

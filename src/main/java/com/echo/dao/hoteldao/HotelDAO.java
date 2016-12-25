@@ -33,7 +33,7 @@ public interface HotelDAO {
 	 * @param hotelID
 	 * @return
 	 */
-	public List<Object[]> getRoomTypeAndNum(int hotelID);
+//	public List<Object[]> getRoomTypeAndNum(int hotelID);
 	
 	/**
 	 * 搜索hotel表，将除了价格因素外的其他因素都符合条件的酒店放入List中

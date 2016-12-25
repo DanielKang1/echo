@@ -84,7 +84,7 @@ public class OrderDAOImpl implements OrderDAO {
 
 	@Override
 	public List<Order> getOrdersByHID(int hotelID) {
-		String hql = "FROM Order WHERE hotelID = ? ";   
+		String hql = "FROM Order WHERE hotel.hotelID = ? ";   
 		Query query = getSession().createQuery(hql);
 		List<Order> result = query.setInteger(0,hotelID).list();
 		return result;

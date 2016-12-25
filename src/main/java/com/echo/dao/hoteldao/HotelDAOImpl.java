@@ -70,10 +70,6 @@ public class HotelDAOImpl implements HotelDAO{
 		return (Hotel)getSession().get(Hotel.class, hotelID);
 	}
 
-	@Override
-	public List<Object[]> getRoomTypeAndNum(int hotelID) {
-		return null;
-	}
 	
 	public List<Hotel> getHotelsByCity(String cityName){
 		String hql = "FROM Hotel WHERE city = ?";   

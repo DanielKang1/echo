@@ -13,6 +13,14 @@ public class HotelStaff  implements Serializable{
 	private String pwd;   //酒店工作人员密码
 	private String phone;   //手机号
 	
+	public HotelStaff(){}
+	
+	public HotelStaff(String staffName, int hotelID, String pwd, String phone) {
+		this.staffName = staffName;
+		this.hotelID = hotelID;
+		this.pwd = pwd;
+		this.phone = phone;
+	}
 	public int getStaffID() {
 		return staffID;
 	}
